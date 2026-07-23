@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP 實體禮品自助與派發管理系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#E3B596', // 較淺、低飽和橘色 (主色)
+                            light: '#F5E3D7',   // 極淺裸橘 (區塊底色)
+                            dark: '#C89775',    // 稍深的橘 (按鈕Hover、強調)
+                            text: '#5A4A3E',    // 深暖褐 (主文字)
+                            muted: '#8F7E70',   // 淺褐 (次要文字)
+                            bg: '#FCFAF8',      // 暖白 (全站背景)
+                        },
+                        status: {
+                            safe: '#A3BBA2',    // 莫蘭迪綠
+                            warn: '#D49D9D',    // 莫蘭迪紅
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(227, 181, 150, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: theme('colors.brand.bg');
+            color: theme('colors.brand.text');
+            scroll-behavior: smooth;
+        }
+        .slide-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        /* 隱藏捲軸但保留滾動功能 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.brand.bg'); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.brand.light'); 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.brand.DEFAULT'); 
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(227, 181, 150, 0.3);
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: theme('colors.brand.DEFAULT');
+            border-radius: 2px;
+        }
+        .stage-number {
+            font-size: 5rem;
+            font-weight: 900;
+            color: theme('colors.brand.light');
+            position: absolute;
+            top: -20px;
+            right: 10px;
+            z-index: 0;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand selection:text-white">
+
+    <!-- Slide 1: Cover -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden px-6 py-20">
+        <!-- 裝飾背景圖形 -->
+        <div class="absolute top-[-10%] right-[-5%] w-96 h-96 bg-brand-light rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[30rem] h-[30rem] bg-[#fdf5f0] rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+        
+        <div class="slide-container relative z-10 w-full text-center">
+            <p class="text-brand-dark tracking-[0.2em] font-medium mb-4 text-sm md:text-base">VIP 尊榮服務・產品提案</p>
+            <h1 class="text-4xl md:text-6xl font-bold text-brand-text mb-6 leading-tight">
+                VIP 實體禮品<br>
+                <span class="text-brand">自助與派發管理系統</span>
+            </h1>
+            <p class="text-brand-muted text-lg md:text-xl max-w-2xl mx-auto mb-12">
+                打造玩家填寫安心・CRM管理高效・個資絕對安全的閉環式禮品派發流程
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 mb-16">
+                <span class="px-5 py-2 rounded-full bg-white text-brand-text text-sm shadow-soft border border-brand-light font-medium"><i class="fa-solid fa-shield-halved text-brand mr-2"></i>軍規級個資防護</span>
+                <span class="px-5 py-2 rounded-full bg-white text-brand-text text-sm shadow-soft border border-brand-light font-medium"><i class="fa-solid fa-list-check text-brand mr-2"></i>四階段標準化流程</span>
+                <span class="px-5 py-2 rounded-full bg-white text-brand-text text-sm shadow-soft border border-brand-light font-medium"><i class="fa-solid fa-lock text-brand mr-2"></i>零風險資安設計</span>
+            </div>
+            <div class="text-brand-muted/50 font-bold tracking-widest">2026</div>
+        </div>
+    </section>
+
+    <!-- Slide 2: Background -->
+    <section class="min-h-screen flex items-center py-20 px-6 bg-white">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">BACKGROUND</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">專案背景與核心價值</h2>
+            <p class="text-brand-muted mb-12 max-w-3xl">過去 VIP 節慶禮品派發，仰賴客服透過 LINE、FB 與玩家反覆確認——耗費人力，且伴隨個資外洩風險。</p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 傳統痛點 -->
+                <div class="bg-[#FCF9F9] rounded-2xl p-8 border border-[#F3E6E6]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-status-warn/20 text-status-warn flex items-center justify-center text-xl"><i class="fa-solid fa-xmark"></i></div>
+                        <h3 class="text-xl font-bold text-[#8C6B6B]">傳統痛點</h3>
+                    </div>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <i class="fa-regular fa-comments text-status-warn mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-[#5A4A4A] mb-1">社群來回確認</h4>
+                                <p class="text-sm text-[#8C6B6B]">客服透過 LINE / FB 與玩家反覆核對資料，耗時費工</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fa-solid fa-unlock-keyhole text-status-warn mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-[#5A4A4A] mb-1">個資傳遞風險</h4>
+                                <p class="text-sm text-[#8C6B6B]">姓名、電話、地址於通訊軟體中裸傳，外洩風險高</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fa-solid fa-person-digging text-status-warn mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-[#5A4A4A] mb-1">人工作業繁重</h4>
+                                <p class="text-sm text-[#8C6B6B]">名單管理、狀態追蹤仰賴人工紀錄，難以規模化</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 系統核心價值 -->
+                <div class="bg-brand-light/30 rounded-2xl p-8 border border-brand-light">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-brand/20 text-brand-dark flex items-center justify-center text-xl"><i class="fa-solid fa-check"></i></div>
+                        <h3 class="text-xl font-bold text-brand-text">系統核心價值</h3>
+                    </div>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <i class="fa-solid fa-user-shield text-brand mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-brand-text mb-1">玩家填寫安心</h4>
+                                <p class="text-sm text-brand-muted">自助網頁 + 雙重金鑰驗證，主導權回到玩家手中</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fa-solid fa-bolt text-brand mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-brand-text mb-1">CRM管理高效</h4>
+                                <p class="text-sm text-brand-muted">強大後台篩選與標籤矩陣，一眼掌握處理進度</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fa-solid fa-shield-cat text-brand mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-brand-text mb-1">個資絕對安全</h4>
+                                <p class="text-sm text-brand-muted">驗證通過前絕不洩漏任何歷史資料，杜絕人為外流</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Workflow -->
+    <section class="min-h-screen flex items-center py-20 px-6">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">02 WORKFLOW</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">系統完整操作流程 (End-to-End)</h2>
+            <p class="text-brand-muted mb-12">將整個禮品派發任務拆解為四個標準化階段，大幅降低人工作業成本</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                <!-- 連接線 (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-brand-light -z-10 transform -translate-y-1/2"></div>
+                
+                <!-- Stage 01 -->
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-brand-light relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-brand-light rounded-full flex items-center justify-center text-brand-dark text-2xl mb-4 group-hover:bg-brand group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-file-import"></i>
+                    </div>
+                    <div class="text-sm text-brand-dark font-bold mb-1">01 名單匯入</div>
+                    <h4 class="font-bold text-brand-text mb-2">CRM ➡ 系統後台</h4>
+                    <p class="text-xs text-brand-muted">CRM 匯入名單，自動生成專屬 Magic Link</p>
+                </div>
+
+                <!-- Stage 02 -->
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-brand-light relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-brand-light rounded-full flex items-center justify-center text-brand-dark text-2xl mb-4 group-hover:bg-brand group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </div>
+                    <div class="text-sm text-brand-dark font-bold mb-1">02 玩家自助填寫</div>
+                    <h4 class="font-bold text-brand-text mb-2">系統前端（玩家）</h4>
+                    <p class="text-xs text-brand-muted">雙重金鑰驗證登入，填寫收禮資訊</p>
+                </div>
+
+                <!-- Stage 03 -->
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-brand-light relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-brand-light rounded-full flex items-center justify-center text-brand-dark text-2xl mb-4 group-hover:bg-brand group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div class="text-sm text-brand-dark font-bold mb-1">03 客服追蹤</div>
+                    <h4 class="font-bold text-brand-text mb-2">系統後台（客服）</h4>
+                    <p class="text-xs text-brand-muted">處理狀態即時更新，智能標籤篩選例外個案</p>
+                </div>
+
+                <!-- Stage 04 -->
+                <div class="bg-white p-6 rounded-2xl shadow-soft border border-brand-light relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-brand-light rounded-full flex items-center justify-center text-brand-dark text-2xl mb-4 group-hover:bg-brand group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <div class="text-sm text-brand-dark font-bold mb-1">04 結案與出貨</div>
+                    <h4 class="font-bold text-brand-text mb-2">物流出貨</h4>
+                    <p class="text-xs text-brand-muted">一鍵匯出標準化出貨表，交付物流派送</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: STAGE 01 -->
+    <section class="min-h-screen flex items-center py-20 px-6 bg-white">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">03 STAGE 01</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">CRM ➡ 系統後台<br><span class="text-xl md:text-2xl text-brand font-normal">名單匯入與專屬網址生成</span></h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 mt-8 items-center">
+                <div class="space-y-8">
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 shrink-0 rounded-full bg-brand text-white flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <h4 class="font-bold text-brand-text mb-1 text-lg">資料匯入</h4>
+                            <p class="text-brand-muted text-sm">CRM 撈取符合本次活動（如：2026 中秋禮）的 VIP 名單</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 shrink-0 rounded-full bg-brand text-white flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <h4 class="font-bold text-brand-text mb-1 text-lg">批次建檔</h4>
+                            <p class="text-brand-muted text-sm">後台點擊「匯入發送名單」，系統自動為每位玩家建立專屬資料列</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 shrink-0 rounded-full bg-brand text-white flex items-center justify-center font-bold">3</div>
+                        <div>
+                            <h4 class="font-bold text-brand-text mb-1 text-lg">生成 Magic Link</h4>
+                            <p class="text-brand-muted text-sm">系統於背景為每位 VIP 產生一組「唯一且加密」的專屬網址</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UI Mockup -->
+                <div class="bg-brand-bg p-8 rounded-3xl border border-brand-light shadow-soft relative overflow-hidden">
+                    <i class="fa-solid fa-link absolute -bottom-10 -right-10 text-9xl text-brand-light opacity-50"></i>
+                    <h5 class="font-bold text-brand-text mb-4">專屬 Magic Link</h5>
+                    <div class="bg-white p-4 rounded-xl font-mono text-sm text-brand-dark mb-6 border border-brand-light flex items-center justify-between">
+                        <span class="truncate">https://vip-gift.link/JCG9534•••</span>
+                        <i class="fa-regular fa-copy cursor-pointer hover:text-brand"></i>
+                    </div>
+                    <ul class="text-sm text-brand-muted space-y-2">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-status-safe"></i> 每位玩家獨立、不可猜測</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-status-safe"></i> 每組網址皆為一次性加密設計</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: STAGE 02 -->
+    <section class="min-h-screen flex items-center py-20 px-6">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">04 STAGE 02</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">系統前端<br><span class="text-xl md:text-2xl text-brand font-normal">玩家自助填寫</span></h2>
+            
+            <div class="grid md:grid-cols-12 gap-8 mt-8">
+                <!-- Mockup App -->
+                <div class="md:col-span-5 bg-white rounded-[2.5rem] p-6 shadow-xl border-[6px] border-brand-bg relative h-[600px] flex flex-col">
+                    <div class="w-20 h-1 bg-brand-light rounded-full mx-auto mb-6"></div>
+                    
+                    <!-- View 1: Auth -->
+                    <div class="flex-1 flex flex-col items-center justify-center text-center px-4" id="mockup-auth">
+                        <div class="w-16 h-16 bg-brand-light rounded-full flex items-center justify-center text-brand mb-4">
+                            <i class="fa-solid fa-lock text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold text-brand-text mb-2 text-sm">為保障您的權益，請輸入遊戲暱稱與綁定手機門號驗證</h4>
+                        <div class="w-full space-y-3 mt-6">
+                            <input type="text" placeholder="遊戲暱稱" class="w-full bg-brand-bg border border-brand-light rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand" readonly>
+                            <input type="text" placeholder="綁定手機門號" class="w-full bg-brand-bg border border-brand-light rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand" readonly>
+                            <button class="w-full bg-brand text-white rounded-lg px-4 py-3 text-sm font-bold mt-2 opacity-90">驗證並繼續 →</button>
+                        </div>
+                        <p class="text-xs text-status-warn mt-4"><i class="fa-solid fa-triangle-exclamation"></i> 錯誤達 3 次將暫停驗證 15 分鐘</p>
+                    </div>
+                </div>
+
+                <!-- Right Content -->
+                <div class="md:col-span-7 flex flex-col justify-center space-y-10">
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-bold text-brand-text border-l-4 border-brand pl-3">① 身分驗證</h3>
+                        <p class="text-brand-muted text-sm">雙重金鑰驗證，暱稱＋門號缺一不可，網址外流也無法冒名進入。</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-bold text-brand-text border-l-4 border-brand pl-3">② 填寫收禮資訊</h3>
+                        <div class="bg-white p-5 rounded-2xl shadow-soft border border-brand-light grid grid-cols-2 gap-3 text-sm text-brand-text">
+                            <div class="bg-brand-bg p-2 rounded text-center">真實姓名</div>
+                            <div class="bg-brand-bg p-2 rounded text-center">聯絡電話</div>
+                            <div class="bg-brand-bg p-2 rounded text-center col-span-2">配送方式（宅配／超取）</div>
+                            <div class="bg-brand-bg p-2 rounded text-center col-span-2">收件地址</div>
+                            <div class="bg-brand-bg p-2 rounded text-center col-span-2 text-brand-muted">備註 / 意見回饋（選填）</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-light/20 p-6 rounded-2xl border border-brand-light">
+                        <h4 class="font-bold text-brand-dark mb-4"><i class="fa-solid fa-pen-nib mr-2"></i>設計重點</h4>
+                        <ul class="space-y-3 text-sm text-brand-muted">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand mt-1"></i> <div><strong class="text-brand-text">支援宅配 / 超商：</strong>超取可直接帶入門市地圖選擇介面</div></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand mt-1"></i> <div><strong class="text-brand-text">登記完成頁：</strong>送出資料後即時顯示完成畫面，讓玩家安心離開</div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: STAGE 03 -->
+    <section class="min-h-screen flex items-center py-20 px-6 bg-white">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">05 STAGE 03</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">系統後台<br><span class="text-xl md:text-2xl text-brand font-normal">客服追蹤與例外處理</span></h2>
+            <p class="text-brand-muted mb-8 max-w-3xl">玩家送出後，狀態即時由「未留存」轉為「已留存」；透過三維度篩選快速鎖定需處理對象。</p>
+            
+            <!-- Dashboard Mockup -->
+            <div class="bg-[#FDFCFB] border border-brand-light rounded-2xl shadow-xl overflow-hidden">
+                <!-- Toolbar -->
+                <div class="bg-white border-b border-brand-light p-4 flex flex-wrap gap-4 items-center">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="font-bold text-brand-text">狀態</span>
+                        <select class="bg-brand-bg border border-brand-light rounded px-3 py-1 text-brand-text outline-none">
+                            <option>全部</option>
+                            <option>已留存</option>
+                            <option>未留存</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="font-bold text-brand-text">資料類別</span>
+                        <div class="flex gap-2">
+                            <span class="bg-status-safe/10 text-status-safe border border-status-safe/20 px-2 py-1 rounded text-xs">留意備註</span>
+                            <span class="bg-brand/10 text-brand-dark border border-brand/20 px-2 py-1 rounded text-xs">歷史異動</span>
+                            <span class="bg-gray-100 text-gray-500 border border-gray-200 px-2 py-1 rounded text-xs">玩家修改</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-brand-text">
+                        <thead class="bg-brand-bg/50 text-brand-muted font-bold">
+                            <tr>
+                                <th class="p-4">玩家ID</th>
+                                <th class="p-4">收禮人</th>
+                                <th class="p-4">配送方式</th>
+                                <th class="p-4">狀態</th>
+                                <th class="p-4">資料類別</th>
+                                <th class="p-4">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-brand-light">
+                            <tr class="hover:bg-brand-bg/50 transition-colors">
+                                <td class="p-4 font-mono text-brand-dark">JCG953456...</td>
+                                <td class="p-4">王大明</td>
+                                <td class="p-4">宅配</td>
+                                <td class="p-4"><span class="bg-status-safe text-white px-2 py-1 rounded-full text-xs">已留存</span></td>
+                                <td class="p-4 flex gap-1">
+                                    <span class="bg-status-safe/10 text-status-safe border border-status-safe/20 px-2 py-1 rounded text-xs">留意備註</span>
+                                    <span class="bg-gray-100 text-gray-500 border border-gray-200 px-2 py-1 rounded text-xs">玩家修改</span>
+                                </td>
+                                <td class="p-4"><button class="text-brand hover:text-brand-dark font-bold">檢視 / 處理</button></td>
+                            </tr>
+                            <tr class="hover:bg-brand-bg/50 transition-colors">
+                                <td class="p-4 font-mono text-brand-dark">JCG887766...</td>
+                                <td class="p-4">陳小華</td>
+                                <td class="p-4">超取</td>
+                                <td class="p-4"><span class="bg-status-safe text-white px-2 py-1 rounded-full text-xs">已留存</span></td>
+                                <td class="p-4">
+                                    <span class="bg-brand/10 text-brand-dark border border-brand/20 px-2 py-1 rounded text-xs">歷史異動</span>
+                                </td>
+                                <td class="p-4"><button class="text-brand hover:text-brand-dark font-bold">檢視 / 處理</button></td>
+                            </tr>
+                            <tr class="hover:bg-brand-bg/50 transition-colors">
+                                <td class="p-4 font-mono text-brand-dark">JCG334455...</td>
+                                <td class="p-4 text-brand-muted">——</td>
+                                <td class="p-4 text-brand-muted">——</td>
+                                <td class="p-4"><span class="bg-status-warn text-white px-2 py-1 rounded-full text-xs">未留存</span></td>
+                                <td class="p-4">
+                                    <span class="bg-[#EBE5DA] text-[#8F7E70] border border-[#E3D9CC] px-2 py-1 rounded text-xs">等候進線</span>
+                                </td>
+                                <td class="p-4"><button class="text-brand hover:text-brand-dark font-bold">檢視 / 處理</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: STAGE 04 -->
+    <section class="min-h-screen flex items-center py-20 px-6">
+        <div class="slide-container w-full text-center">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">06 STAGE 04</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">系統後台 ➡ 物流<br><span class="text-xl md:text-2xl text-brand font-normal">結案與出貨</span></h2>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-16">
+                <!-- Step 1 -->
+                <div class="flex flex-col items-center max-w-xs">
+                    <div class="w-24 h-24 bg-white rounded-full shadow-soft flex items-center justify-center text-brand-dark text-4xl mb-6 border border-brand-light">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h4 class="font-bold text-brand-text mb-2 text-lg">一鍵匯出</h4>
+                    <p class="text-sm text-brand-muted">活動截止後，CRM 確認名單無誤，點擊「匯出出貨表」</p>
+                </div>
+                
+                <i class="fa-solid fa-arrow-right text-brand-light text-3xl hidden md:block"></i>
+                <i class="fa-solid fa-arrow-down text-brand-light text-3xl md:hidden py-4"></i>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col items-center max-w-xs">
+                    <div class="w-24 h-24 bg-white rounded-full shadow-soft flex items-center justify-center text-brand-dark text-4xl mb-6 border border-brand-light">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </div>
+                    <h4 class="font-bold text-brand-text mb-2 text-lg">標準化格式</h4>
+                    <p class="text-sm text-brand-muted">系統自動產出符合物流商格式的標準化 Excel / CSV 檔案</p>
+                </div>
+
+                <i class="fa-solid fa-arrow-right text-brand-light text-3xl hidden md:block"></i>
+                <i class="fa-solid fa-arrow-down text-brand-light text-3xl md:hidden py-4"></i>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col items-center max-w-xs">
+                    <div class="w-24 h-24 bg-brand rounded-full shadow-soft flex items-center justify-center text-white text-4xl mb-6">
+                        <i class="fa-solid fa-truck"></i>
+                    </div>
+                    <h4 class="font-bold text-brand-text mb-2 text-lg">交付派送</h4>
+                    <p class="text-sm text-brand-muted">檔案直接交由倉庫或合作物流進行實體禮品派發</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Highlight 01 -->
+    <section class="min-h-screen flex items-center py-20 px-6 bg-brand-text text-brand-bg relative overflow-hidden">
+        <!-- Dark mode background elements -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-[#4A3C30] -skew-x-12 transform origin-top opacity-50 z-0"></div>
+        
+        <div class="slide-container w-full relative z-10">
+            <div class="text-brand-dark tracking-widest text-sm mb-2 font-bold">07 HIGHLIGHT 01</div>
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">軍規級的個資防護<br><span class="text-2xl md:text-3xl font-normal text-brand-light">(Magic Link)</span></h2>
+            <p class="text-brand-light/80 mb-16 max-w-2xl text-lg">「無鑰匙不給進」設計：網址只是一個「地址」，暱稱與門號才是打開保險箱的雙重鑰匙。</p>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-[#5A4A3E]/50 p-8 rounded-2xl border border-[#7A6A5E] backdrop-blur-sm">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="text-3xl text-brand"><i class="fa-solid fa-gamepad"></i> <span class="text-xl">+</span> <i class="fa-solid fa-mobile-screen"></i></div>
+                        <i class="fa-solid fa-arrow-right text-brand-light/50"></i>
+                        <div class="text-3xl text-status-safe"><i class="fa-solid fa-unlock"></i></div>
+                    </div>
+                    <h4 class="font-bold text-white mb-2 text-lg">雙重金鑰</h4>
+                    <p class="text-sm text-brand-light/70">遊戲暱稱與綁定門號驗證通過，方可進入表單，缺一不可。</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-[#5A4A3E]/50 p-8 rounded-2xl border border-[#7A6A5E] backdrop-blur-sm">
+                    <div class="text-4xl text-brand mb-6"><i class="fa-solid fa-user-secret"></i></div>
+                    <h4 class="font-bold text-white mb-2 text-lg">絕不洩漏歷史資訊</h4>
+                    <p class="text-sm text-brand-light/70">驗證通過前，網頁絕對不會顯示任何前期留存的歷史地址或真名。</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-[#5A4A3E]/50 p-8 rounded-2xl border border-[#7A6A5E] backdrop-blur-sm">
+                    <div class="text-4xl text-status-warn mb-6"><i class="fa-solid fa-shield-virus"></i></div>
+                    <h4 class="font-bold text-white mb-2 text-lg">暴力破解防禦 / 杜絕誤傳</h4>
+                    <p class="text-sm text-brand-light/70">網址遭截圖外流也無法進入；連續錯誤 3 次，系統自動凍結該網址 15 分鐘。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Highlight 02 -->
+    <section class="min-h-screen flex items-center py-20 px-6">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">08 HIGHLIGHT 02</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">三維度智能篩選與標籤矩陣</h2>
+            <p class="text-brand-muted mb-12">面對龐大 VIP 名單，透過「狀態、追蹤類別、資料類別」三大維度，精準限縮目標名單</p>
+
+            <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-brand-light">
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <!-- Dimension 1 -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-4 text-brand-dark font-bold border-b border-brand-light pb-2">
+                            <span class="bg-brand text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span> 狀態
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-brand-bg rounded border border-brand-light text-sm text-brand-text">全部</span>
+                            <span class="px-3 py-1 bg-status-safe/10 text-status-safe border border-status-safe/20 rounded text-sm">已留存</span>
+                            <span class="px-3 py-1 bg-status-warn/10 text-status-warn border border-status-warn/20 rounded text-sm">未留存</span>
+                        </div>
+                    </div>
+                    <!-- Dimension 2 -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-4 text-brand-dark font-bold border-b border-brand-light pb-2">
+                            <span class="bg-brand text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span> 追蹤類別
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-brand-bg rounded border border-brand-light text-sm text-brand-text">初次通知</span>
+                            <span class="px-3 py-1 bg-brand-bg rounded border border-brand-light text-sm text-brand-text">主動聯繫</span>
+                            <span class="px-3 py-1 bg-[#EBE5DA] text-[#8F7E70] border border-[#E3D9CC] rounded text-sm">等候進線</span>
+                        </div>
+                    </div>
+                    <!-- Dimension 3 -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-4 text-brand-dark font-bold border-b border-brand-light pb-2">
+                            <span class="bg-brand text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span> 資料類別
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-status-safe/10 text-status-safe border border-status-safe/20 rounded text-sm">留意備註</span>
+                            <span class="px-3 py-1 bg-brand/10 text-brand-dark border border-brand/20 rounded text-sm">歷史異動</span>
+                            <span class="px-3 py-1 bg-gray-100 text-gray-500 border border-gray-200 rounded text-sm">玩家修改</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-500 border border-blue-200 rounded text-sm">客服編輯</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-bg p-6 rounded-2xl flex flex-col md:flex-row items-center gap-6 border border-brand-light">
+                    <div class="w-full md:w-1/3">
+                        <h4 class="font-bold text-brand-text mb-2"><i class="fa-solid fa-layer-group text-brand mr-2"></i>動態堆疊標籤</h4>
+                        <p class="text-sm text-brand-muted">玩家情況複雜時（如：既是歷史異動又有留意備註），標籤自動垂直堆疊，客服一眼看穿異常狀況。</p>
+                    </div>
+                    <div class="w-full md:w-2/3 flex items-center justify-center bg-white p-6 rounded-xl border border-brand-light shadow-inner">
+                        <table class="w-full text-left text-sm">
+                            <tr class="border-b border-brand-light">
+                                <td class="py-2 px-4 text-brand-muted">JCG953456...</td>
+                                <td class="py-2 px-4">王大明</td>
+                                <td class="py-2 px-4">
+                                    <div class="flex flex-col gap-1 items-start">
+                                        <span class="px-2 py-1 bg-status-safe/10 text-status-safe border border-status-safe/20 rounded text-xs shadow-sm">留意備註</span>
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-500 border border-gray-200 rounded text-xs shadow-sm">玩家修改</span>
+                                    </div>
+                                </td>
+                                <td class="py-2 px-4 text-brand-muted font-bold text-xs tracking-wider">← 垂直堆疊</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: Highlight 03 -->
+    <section class="min-h-screen flex items-center py-20 px-6 bg-white">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">09 HIGHLIGHT 03</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">上帝視角的「檢視明細」視窗</h2>
+            <p class="text-brand-muted mb-12">徹底消滅客服與玩家間的資訊斷層：雙軌備註 + 全時間軸歷程</p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 雙軌備註 -->
+                <div class="space-y-6">
+                    <div class="bg-brand-bg p-6 rounded-2xl border border-brand-light relative">
+                        <div class="absolute -left-3 -top-3 w-8 h-8 bg-white border border-brand-light rounded-full flex items-center justify-center text-brand shadow-sm"><i class="fa-solid fa-comment-dots"></i></div>
+                        <h4 class="font-bold text-brand-text mb-3 ml-2">玩家前端備註</h4>
+                        <div class="bg-white p-4 rounded-xl text-sm text-brand-muted border border-brand-light italic">
+                            「麻煩幫我注意一下包裹不要摔到，裡面有易碎物品，謝謝！可以改用郵局寄送嗎？」
+                        </div>
+                    </div>
+                    
+                    <div class="bg-status-safe/5 p-6 rounded-2xl border border-status-safe/20 relative">
+                        <div class="absolute -left-3 -top-3 w-8 h-8 bg-white border border-status-safe/20 rounded-full flex items-center justify-center text-status-safe shadow-sm"><i class="fa-solid fa-note-sticky"></i></div>
+                        <h4 class="font-bold text-status-safe mb-3 ml-2">客服內部備註</h4>
+                        <div class="bg-white p-4 rounded-xl text-sm text-brand-text border border-status-safe/20">
+                            「2026/07/23 玩家進線確認地址填錯，已協助更正並回撥確認。」
+                        </div>
+                    </div>
+                    
+                    <p class="text-center font-bold text-brand-dark bg-brand-light/30 py-2 rounded-lg">內外資訊互不干擾，責任歸屬清清楚楚</p>
+                </div>
+
+                <!-- Timeline -->
+                <div class="bg-white p-8 rounded-2xl shadow-xl border border-brand-light">
+                    <h4 class="font-bold text-brand-text mb-6 border-b border-brand-light pb-4"><i class="fa-solid fa-clock-rotate-left text-brand mr-2"></i>全時間軸歷程 Timeline</h4>
+                    <div class="relative border-l-2 border-brand-light ml-3 space-y-8 pb-4">
+                        <div class="relative pl-6">
+                            <div class="absolute w-4 h-4 bg-brand-light rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                            <div class="text-xs text-brand-muted mb-1">2026/07/20 14:10</div>
+                            <div class="text-sm font-bold text-brand-text">【玩家】首次填寫送出資料</div>
+                        </div>
+                        <div class="relative pl-6">
+                            <div class="absolute w-4 h-4 bg-status-safe/50 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                            <div class="text-xs text-brand-muted mb-1">2026/07/23 09:45</div>
+                            <div class="text-sm font-bold text-brand-text">【客服】修改收禮人聯絡門號</div>
+                        </div>
+                        <div class="relative pl-6">
+                            <div class="absolute w-4 h-4 bg-brand rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                            <div class="text-xs text-brand-muted mb-1">2026/07/23 09:45</div>
+                            <div class="text-sm font-bold text-brand-text">【系統】資料更新，標記「客服編輯」</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 11: Highlight 04 -->
+    <section class="min-h-screen flex items-center py-20 px-6">
+        <div class="slide-container w-full">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">10 HIGHLIGHT 04</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">武裝到牙齒的「主動核資」模組</h2>
+            <p class="text-brand-muted mb-12">針對需主動出擊（如遲未填寫）的玩家，提供最高效的作業輔助</p>
+
+            <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-brand-light flex flex-col md:flex-row">
+                <!-- UI Mockup -->
+                <div class="w-full md:w-1/2 bg-brand-bg p-8 border-r border-brand-light">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="font-bold text-brand-text">主動核資視窗</h4>
+                        <span class="bg-[#00B900]/10 text-[#00B900] px-3 py-1 rounded-full text-xs font-bold border border-[#00B900]/20"><i class="fa-brands fa-line mr-1"></i>LINE</span>
+                    </div>
+                    <div class="mb-4 text-sm text-brand-muted">負責頻道：新台灣馬丁</div>
+                    
+                    <div class="bg-white p-4 rounded-xl border border-brand-light mb-4">
+                        <div class="text-xs text-brand-muted mb-2">前期歷史收件資料（2026新年VIP計畫）</div>
+                        <div class="font-bold text-brand-text mb-1">張三豐 ｜ 0988-777-666</div>
+                        <div class="text-sm text-brand-text">高雄市三民區建國二路100號</div>
+                    </div>
+
+                    <div class="bg-brand/10 p-4 rounded-xl border border-brand/20 relative">
+                        <div class="text-xs text-brand-dark font-bold mb-2">智能罐頭訊息</div>
+                        <p class="text-sm text-brand-text leading-relaxed">
+                            親愛的張三豐，中秋佳節將至，我們將依上次收件資訊為您寄送禮品，煩請確認地址是否正確～
+                        </p>
+                        <button class="absolute bottom-3 right-3 bg-brand text-white px-3 py-1.5 rounded text-xs shadow hover:bg-brand-dark transition-colors">
+                            <i class="fa-regular fa-copy mr-1"></i> 一鍵複製
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Explanation -->
+                <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center space-y-8">
+                    <div>
+                        <h4 class="font-bold text-brand-text text-lg mb-2 flex items-center"><i class="fa-solid fa-star text-brand mr-2 text-sm"></i>視覺化來源標記</h4>
+                        <p class="text-brand-muted text-sm">膠囊圖示標記進線管道（LINE、FB），並帶出負責客服頻道名稱。</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-text text-lg mb-2 flex items-center"><i class="fa-solid fa-star text-brand mr-2 text-sm"></i>歷史資料無縫預覽</h4>
+                        <p class="text-brand-muted text-sm">直接帶入該玩家前一期活動的收件資料，供客服核資基礎。</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-text text-lg mb-2 flex items-center"><i class="fa-solid fa-star text-brand mr-2 text-sm"></i>智能罐頭訊息生成</h4>
+                        <p class="text-brand-muted text-sm">自動組合暱稱、歷史收件資訊與節慶關鍵字，一鍵複製發送。</p>
+                    </div>
+                    
+                    <div class="mt-4 pt-6 border-t border-brand-light">
+                        <div class="text-3xl font-black text-brand mb-1">300% <span class="text-lg font-bold text-brand-dark">溝通效率提升</span></div>
+                        <p class="text-brand-muted text-sm">省去繁瑣打字時間</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 12: IMPACT -->
+    <section class="min-h-screen flex items-center py-20 px-6 bg-brand-light/30">
+        <div class="slide-container w-full text-center">
+            <div class="text-brand-muted tracking-widest text-sm mb-2 font-bold">11 EXPECTED IMPACT</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-text section-title">預期導入效益</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-white p-10 rounded-[2rem] shadow-xl border border-brand-light/50 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-status-safe mb-4">0</div>
+                    <h4 class="text-xl font-bold text-brand-text mb-4">資安風險</h4>
+                    <p class="text-sm text-brand-muted">前端雙重驗證機制，將人為操作不當導致的個資外洩風險降至 0</p>
+                </div>
+                
+                <div class="bg-white p-10 rounded-[2rem] shadow-xl border border-brand-light/50 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-brand mb-4">300<span class="text-3xl">%</span></div>
+                    <h4 class="text-xl font-bold text-brand-text mb-4">溝通效率提升</h4>
+                    <p class="text-sm text-brand-muted">智能罐頭訊息 + 一鍵複製，大幅減少一對一文字確認時間</p>
+                </div>
+                
+                <div class="bg-white p-10 rounded-[2rem] shadow-xl border border-brand-light/50 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-brand-dark mb-4">100<span class="text-3xl">%</span></div>
+                    <h4 class="text-xl font-bold text-brand-text mb-4">進度透明可控</h4>
+                    <p class="text-sm text-brand-muted">強大後台篩選與時間軸紀錄，精準掌握每檔活動派發進度</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 13: End -->
+    <section class="min-h-[70vh] flex flex-col items-center justify-center relative overflow-hidden px-6 py-20 bg-brand-text text-brand-bg text-center">
+        <!-- 裝飾背景圖形 -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-[#5A4A3E] rounded-full filter blur-3xl opacity-50 z-0"></div>
+        
+        <div class="slide-container relative z-10">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6 tracking-wider">THANK YOU</h2>
+            <p class="text-xl text-brand-light mb-12">尊榮體驗，從安心的每一步開始</p>
+            
+            <div class="w-16 h-1 bg-brand mx-auto mb-12"></div>
+            
+            <p class="text-brand-light/80 font-medium mb-8">VIP 實體禮品自助與派發管理系統｜歡迎交流與提問</p>
+            
+            <div class="flex flex-wrap justify-center gap-4 text-sm text-brand-light/60">
+                <span>玩家填寫安心</span>
+                <span class="w-1 h-1 bg-brand rounded-full my-auto"></span>
+                <span>CRM管理高效</span>
+                <span class="w-1 h-1 bg-brand rounded-full my-auto"></span>
+                <span>個資絕對安全</span>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
