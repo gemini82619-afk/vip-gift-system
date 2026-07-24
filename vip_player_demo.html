@@ -201,6 +201,13 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #D4AF37; /* 滑動時變成更亮的純金色 */
     }
+        /* === 壓制 JS 動態寫入的超商門市白色背景 === */
+    #selectedStore {
+        background-color: #1A1A1A !important; /* 強制維持深黑灰底色 */
+        color: #F8FAFC !important; /* 強制維持亮白文字 */
+        border: 1px solid #BF953F !important; /* 將 JS 預設的藍框改為我們專屬的金框 */
+        cursor: not-allowed !important; /* 保持唯讀的游標狀態 */
+    }
 </style>
 </head>
 <body>
