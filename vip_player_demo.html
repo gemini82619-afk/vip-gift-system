@@ -300,12 +300,12 @@
             <div class="form-scroll-body">
                 <div class="form-group">
                     <label>真實姓名</label>
-                    <input type="text" placeholder="請輸入收件人姓名" value="王大明">
+                    <input type="text" id="inputName" placeholder="請輸入收件人姓名" value="">
                 </div>
                 
                 <div class="form-group">
                     <label>聯絡電話</label>
-                    <input type="tel" placeholder="09xxxxxxxx" value="0912345678">
+                    <input type="tel" id="inputPhone" placeholder="09xxxxxxxx" value="">
                 </div>
                 
                 <div class="form-group">
@@ -321,10 +321,18 @@
                     <div class="form-group">
                         <label>收件地址</label>
                         <div class="form-row" style="margin-bottom: 10px;">
-                            <select style="flex: 1;"><option>台中市</option></select>
-                            <select style="flex: 1;"><option>西屯區</option></select>
+                            <select id="inputCity" style="flex: 1;">
+                                <option value="" disabled selected>請選擇縣市</option>
+                                <option>台中市</option>
+                                <option>台北市</option>
+                            </select>
+                            <select id="inputDistrict" style="flex: 1;">
+                                <option value="" disabled selected>請選擇行政區</option>
+                                <option>西屯區</option>
+                                <option>信義區</option>
+                            </select>
                         </div>
-                        <input type="text" placeholder="請輸入街道巷弄號樓" value="台灣大道三段99號">
+                        <input type="text" id="inputAddress" placeholder="請輸入街道巷弄號樓" value="">
                     </div>
                 </div>
 
@@ -407,9 +415,9 @@
             <h3>確認收件資訊</h3>
             <p style="font-size: 14px; color: #475569; margin-bottom: 15px;">請確認以下資訊是否正確，送出後於截止日前仍可修改。</p>
             <div class="modal-data">
-                <strong>姓名：</strong> 王大明<br>
-                <strong>電話：</strong> 0912345678<br>
-                <div id="modalAddressDisplay"><strong>地址：</strong> 台中市西屯區台灣大道三段99號 (宅配)</div>
+                <strong>姓名：</strong> <span id="confirmName"></span><br>
+                <strong>電話：</strong> <span id="confirmPhone"></span><br>
+                <div id="modalAddressDisplay"></div>
             </div>
             <div class="modal-actions">
                 <button class="btn-secondary-outline" style="margin-top:0;" onclick="hideModal()">返回修改</button>
@@ -451,10 +459,18 @@
     }
 
     function updateModalData() {
+        // 動態抓取填寫的姓名與電話
+        document.getElementById('confirmName').innerText = document.getElementById('inputName').value || '(未填寫)';
+        document.getElementById('confirmPhone').innerText = document.getElementById('inputPhone').value || '(未填寫)';
+
         const mode = document.getElementById('deliveryMethod').value;
         const addressDisplay = document.getElementById('modalAddressDisplay');
+        
         if (mode === 'home') {
-            addressDisplay.innerHTML = "<strong>地址：</strong> 台中市西屯區台灣大道三段99號 (宅配)";
+            const city = document.getElementById('inputCity').value || '';
+            const district = document.getElementById('inputDistrict').value || '';
+            const addr = document.getElementById('inputAddress').value || '(未填寫完整地址)';
+            addressDisplay.innerHTML = "<strong>地址：</strong> " + city + district + addr + " (宅配)";
         } else {
             const store = document.getElementById('selectedStore').value || "<span style='color:red;'>尚未選擇門市</span>";
             addressDisplay.innerHTML = "<strong>門市：</strong> " + store + " (超取)";
