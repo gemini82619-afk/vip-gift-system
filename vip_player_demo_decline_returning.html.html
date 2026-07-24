@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玩家端 - 禮品收件資訊 (放棄後再次編輯)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            height: 800px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #1e293b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 18px; font-weight: 500;}
+        .content {
+            padding: 30px 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #334155; font-size: 14px;}
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        /* 唯讀狀態樣式 */
+        .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
+            background-color: #f8fafc;
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+            -webkit-text-fill-color: #94a3b8;
+            opacity: 1; 
+        }
+
+        .form-group input:focus:not(:disabled), .form-group select:focus:not(:disabled), .form-group textarea:focus:not(:disabled) {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .form-row { display: flex; gap: 10px; }
+        
+        /* 按鈕樣式 */
+        .btn-primary {
+            width: 100%;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        .btn-primary:hover:not(:disabled) { background-color: #2563eb; }
+        .btn-primary:disabled { background-color: #94a3b8; cursor: not-allowed; }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #64748b;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-secondary-outline {
+            background-color: transparent;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .btn-secondary-outline:hover { background-color: #f8fafc; }
+        
+        /* 取消按鈕樣式 (灰底灰框黑字) */
+        .btn-gray-solid {
+            background-color: #e2e8f0;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .btn-gray-solid:hover { background-color: #cbd5e1; }
+
+        /* 右上角修改按鈕樣式 */
+        .btn-edit-small {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            background-color: #e2e8f0;
+            color: #475569;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-edit-small:hover { background-color: #cbd5e1; }
+
+        .info-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            padding-bottom: 20px; /* 給按鈕留空間 */
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #475569;
+            position: relative; /* 供按鈕絕對定位使用 */
+        }
+        .text-center { text-align: center; }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none; justify-content: center; align-items: center;
+            z-index: 10;
+        }
+        .modal {
+            background: white; width: 85%; border-radius: 12px; padding: 25px 20px;
+        }
+        .modal h3 { margin-top: 0; color: #1e293b;}
+        .modal-data { background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 14px; margin-bottom: 20px;}
+        .modal-actions { display: flex; gap: 10px; }
+        
+        /* 模擬電子地圖區塊的專屬樣式 */
+        .map-placeholder {
+            background-color: #e2e8f0; height: 200px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; justify-content: center; align-items: center; color: #94a3b8; flex-direction: column;
+            border: 1px dashed #cbd5e1;
+        }
+        .store-item {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .store-item:hover { border-color: #3b82f6; background: #eff6ff; }
+        .store-item .store-name { font-weight: bold; color: #1e293b; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+        .store-item .store-address { font-size: 13px; color: #64748b; margin-left: 24px;}
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    <div class="header">
+        <h1>VIP 專屬禮品登記</h1>
+    </div>
+    
+    <div class="content">
+        <!-- View 1: 身分驗證 -->
+        <div id="view-auth" class="view-section active">
+            <div class="text-center" style="margin-bottom: 30px;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 48px; color: #3b82f6; margin-bottom: 15px;"></i>
+                <h2 style="margin: 0; color: #1e293b; font-size: 20px;">身分驗證</h2>
+                <p style="color: #64748b; font-size: 14px;">為了保障您的權益，請輸入您的遊戲暱稱與綁定的手機門號進行驗證。</p>
+            </div>
+            
+            <div class="form-group">
+                <label>遊戲暱稱</label>
+                <input type="text" placeholder="請輸入您的遊戲暱稱" id="nicknameInput">
+            </div>
+            
+            <div class="form-group">
+                <label>綁定手機門號</label>
+                <input type="tel" placeholder="09xxxxxxxx" id="phoneInput">
+            </div>
+            
+            <!-- 再次編輯情境 (原為放棄狀態)，跳過意願確認，直接進入 view-form -->
+            <button class="btn-primary" onclick="switchView('view-form')">驗證並繼續</button>
+            <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">錯誤達 3 次將暫停驗證 15 分鐘</p>
+        </div>
+
+        <!-- View 5: 資料填寫表單 (預設為空且鎖定) -->
+        <div id="view-form" class="view-section">
+            <div class="info-card">
+                歡迎回來，<strong>玩家 [Hero_99]</strong>！<br>
+                <span style="color: #ef4444; font-weight: bold; font-size: 15px;">您已於 2026/07/23 放棄領取！</span><br>
+                若需異動請點選修改按鈕。
+                <button id="btnEnableEdit" class="btn-edit-small" onclick="enableEditMode()">
+                    <i class="fa-solid fa-pen"></i> 修改
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label>真實姓名</label>
+                <input type="text" id="inputName" placeholder="請輸入收件人姓名" value="" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label>聯絡電話</label>
+                <input type="tel" id="inputPhone" placeholder="09xxxxxxxx" value="" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label>配送方式</label>
+                <select id="deliveryMethod" onchange="toggleDeliveryMode()" disabled>
+                    <option value="" disabled selected>請選擇配送方式</option>
+                    <option value="home">宅配到府</option>
+                    <option value="store">超商取貨</option>
+                </select>
+            </div>
+            
+            <!-- 宅配欄位 -->
+            <div id="homeDeliveryFields" style="display: none;">
+                <div class="form-group">
+                    <label>收件地址</label>
+                    <div class="form-row" style="margin-bottom: 10px;">
+                        <select class="form-control" style="flex: 1;" disabled>
+                            <option value="" disabled selected>請選擇縣市</option>
+                            <option>台中市</option>
+                            <option>台北市</option>
+                        </select>
+                        <select class="form-control" style="flex: 1;" disabled>
+                            <option value="" disabled selected>請選擇行政區</option>
+                            <option>西屯區</option>
+                            <option>信義區</option>
+                        </select>
+                    </div>
+                    <input type="text" id="inputAddress" placeholder="請輸入街道巷弄號樓" value="" disabled>
+                </div>
+            </div>
+
+            <!-- 超商取貨欄位 (預設隱藏) -->
+            <div id="storeDeliveryFields" style="display: none;">
+                <div class="form-group">
+                    <label>選擇取貨門市</label>
+                    <div class="form-row" style="margin-bottom: 10px;">
+                        <select style="flex: 1;" disabled>
+                            <option value="" disabled selected>請選擇超商</option>
+                            <option>7-ELEVEN</option>
+                            <option>全家便利商店</option>
+                        </select>
+                        <button id="btnEmap" class="btn-primary" style="margin-top: 0; flex: 1; padding: 10px; background-color: #475569;" onclick="openEmap()" disabled>
+                            <i class="fa-solid fa-map-location-dot"></i> 開啟電子地圖
+                        </button>
+                    </div>
+                    <input type="text" id="selectedStore" placeholder="尚未選擇門市，請點擊上方按鈕" readonly disabled style="background-color: #f8fafc; color: #64748b;">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>備註 / 意見回饋 (選填)</label>
+                <textarea rows="3" id="inputRemark" placeholder="若有特殊需求請在此填寫..." disabled></textarea>
+            </div>
+            
+            <!-- 操作按鈕區域：預設隱藏，點選修改後才會顯示 -->
+            <div class="form-row" id="actionRow" style="margin-top: 20px; display: none;">
+                <button id="btnGetOut" class="btn-gray-solid" style="flex: 1; margin-top: 0;" onclick="getOut()">取消</button>
+                <button id="btnSubmit" class="btn-primary" style="flex: 2; margin-top: 0;" onclick="showModal()">確認送出</button>
+            </div>
+        </div>
+
+        <!-- View 6: 登記完成 -->
+        <div id="view-success" class="view-section text-center" style="padding-top: 50px;">
+            <i class="fa-solid fa-circle-check" style="font-size: 64px; color: #22c55e; margin-bottom: 20px;"></i>
+            <h2 style="color: #1e293b;">異動完成！</h2>
+            <p style="color: #64748b; margin-bottom: 30px;">您的最新收件資訊已成功留存。我們將於活動結束後陸續安排寄出，再請留意物流通知。</p>
+            <div class="info-card" style="text-align: left;">
+                💡 <strong>溫馨提醒：</strong><br>
+                在 2026/07/30 截止日前，若需修改地址，可再次點擊原通知連結進行更新。
+            </div>
+            <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
+        </div>
+
+        <!-- View 7: 模擬電子地圖 (E-map) -->
+        <div id="view-emap" class="view-section">
+            <button class="btn-secondary" style="margin-top:0; margin-bottom: 15px; padding: 8px 12px; width: auto; font-size: 14px; color: #3b82f6; background: #eff6ff; border-radius: 20px;" onclick="switchView('view-form')">
+                <i class="fa-solid fa-chevron-left"></i> 返回表單
+            </button>
+            
+            <div class="map-placeholder">
+                <i class="fa-solid fa-map-location-dot" style="font-size: 32px; color: #ef4444; margin-bottom: 10px;"></i>
+                <span>模擬超商電子地圖 UI</span>
+            </div>
+            
+            <h3 style="margin-top:0; font-size: 16px; color: #334155; margin-bottom: 15px;">附近門市 (請選擇)</h3>
+            
+            <div class="store-item" onclick="confirmStore('7-ELEVEN 逢甲門市 (台中市西屯區逢甲路999號)')">
+                <div class="store-name"><i class="fa-solid fa-store" style="color: #10b981;"></i> 7-ELEVEN 逢甲門市</div>
+                <div class="store-address">台中市西屯區逢甲路999號</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal (確認視窗) -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <h3>確認收件資訊</h3>
+            <p style="font-size: 14px; color: #475569; margin-bottom: 15px;">請確認以下資訊是否正確，送出後於截止日前仍可修改。</p>
+            <div class="modal-data">
+                <strong>姓名：</strong> <span id="confirmName"></span><br>
+                <strong>電話：</strong> <span id="confirmPhone"></span><br>
+                <div id="modalAddressDisplay"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary-outline" style="margin-top:0;" onclick="hideModal()">返回修改</button>
+                <button class="btn-primary" style="margin-top:0;" onclick="submitForm()">確認送出</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 啟用編輯模式腳本
+    function enableEditMode() {
+        // 1. 移除表單所有輸入元件的 disabled 屬性
+        document.querySelectorAll('#view-form input, #view-form select, #view-form textarea, #view-form button').forEach(el => {
+            el.removeAttribute('disabled');
+        });
+        
+        // 確保根據預設選項顯示對應配送欄位
+        toggleDeliveryMode();
+
+        // 2. 隱藏右上角的「修改」按鈕
+        document.getElementById('btnEnableEdit').style.display = 'none';
+        
+        // 3. 顯示下方的操作按鈕區域 (包含取消與確認送出)
+        document.getElementById('actionRow').style.display = 'flex';
+    }
+
+    // 觸發「取消」按鈕腳本
+    function getOut() {
+        // 1. 清空上方收件資訊欄位
+        document.getElementById('inputName').value = '';
+        document.getElementById('inputPhone').value = '';
+        document.getElementById('inputAddress').value = '';
+        document.getElementById('inputRemark').value = '';
+        
+        // 2. 直接返回首頁 (身分驗證)
+        switchView('view-auth');
+    }
+
+    function toggleDeliveryMode() {
+        const mode = document.getElementById('deliveryMethod').value;
+        if (mode === 'home') {
+            document.getElementById('homeDeliveryFields').style.display = 'block';
+            document.getElementById('storeDeliveryFields').style.display = 'none';
+        } else if (mode === 'store') {
+            document.getElementById('homeDeliveryFields').style.display = 'none';
+            document.getElementById('storeDeliveryFields').style.display = 'block';
+        }
+    }
+
+    function openEmap() {
+        switchView('view-emap');
+    }
+
+    function confirmStore(storeName) {
+        document.getElementById('selectedStore').value = storeName;
+        document.getElementById('selectedStore').style.backgroundColor = '#fff';
+        document.getElementById('selectedStore').style.color = '#0f172a';
+        document.getElementById('selectedStore').style.border = '1px solid #3b82f6';
+        switchView('view-form');
+    }
+
+    function updateModalData() {
+        // 動態抓取當前輸入框的值更新至確認視窗
+        document.getElementById('confirmName').innerText = document.getElementById('inputName').value || '(未填寫)';
+        document.getElementById('confirmPhone').innerText = document.getElementById('inputPhone').value || '(未填寫)';
+
+        const mode = document.getElementById('deliveryMethod').value;
+        const addressDisplay = document.getElementById('modalAddressDisplay');
+        if (mode === 'home') {
+            const addr = document.getElementById('inputAddress').value || '(未填寫地址)';
+            addressDisplay.innerHTML = "<strong>地址：</strong> " + addr + " (宅配)";
+        } else {
+            const store = document.getElementById('selectedStore').value || "<span style='color:red;'>尚未選擇門市</span>";
+            addressDisplay.innerHTML = "<strong>門市：</strong> " + store + " (超取)";
+        }
+    }
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+    }
+    
+    function showModal() {
+        updateModalData();
+        document.getElementById('confirmModal').style.display = 'flex';
+    }
+    
+    function hideModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+    
+    function submitForm() {
+        hideModal();
+        switchView('view-success');
+    }
+</script>
+</body>
+</html>
