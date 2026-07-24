@@ -143,7 +143,7 @@
         }
         .btn-secondary-outline:hover { background-color: #f8fafc; }
         
-        /* 滾出去按鈕樣式 (灰底灰框黑字) */
+        /* 取消按鈕樣式 (灰底灰框黑字) */
         .btn-gray-solid {
             background-color: #e2e8f0;
             color: #0f172a;
@@ -257,7 +257,7 @@
             <div class="form-fixed-header">
                 <div class="info-card">
                     歡迎回來，<strong>玩家 [Hero_99]</strong>！<br>
-                    <span style="color: #ef4444; font-weight: bold; font-size: 15px;">您已於 2026/07/23 放棄領取 🤪</span><br>
+                    <span style="color: #ef4444; font-weight: bold; font-size: 15px;">您已於 2026/07/23 放棄領取！</span><br>
                     若需異動請點選修改按鈕。
                     <button id="btnEnableEdit" class="btn-edit-small" onclick="enableEditMode()">
                         <i class="fa-solid fa-pen"></i> 修改
@@ -329,7 +329,7 @@
                 </div>
                 
                 <div class="form-row" id="actionRow" style="margin-top: 20px; display: none;">
-                    <button id="btnGetOut" class="btn-gray-solid" style="flex: 1; margin-top: 0;" onclick="getOut()">滾出去</button>
+                    <button id="btnGetOut" class="btn-gray-solid" style="flex: 1; margin-top: 0;" onclick="getOut()">取消</button>
                     <button id="btnSubmit" class="btn-primary" style="flex: 2; margin-top: 0;" onclick="showModal()">確認送出</button>
                 </div>
             </div>
