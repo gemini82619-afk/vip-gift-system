@@ -87,6 +87,20 @@
             margin-top: 10px;
             cursor: pointer;
         }
+        .btn-secondary-outline {
+            background-color: transparent;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .btn-secondary-outline:hover { background-color: #f8fafc; }
         
         .info-card {
             background-color: #f8fafc;
@@ -153,11 +167,49 @@
                 <input type="tel" placeholder="09xxxxxxxx" id="phoneInput">
             </div>
             
-            <button class="btn-primary" onclick="switchView('view-form')">驗證並繼續</button>
+            <button class="btn-primary" onclick="switchView('view-willingness')">驗證並繼續</button>
             <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">錯誤達 3 次將暫停驗證 15 分鐘</p>
         </div>
 
-        <!-- View 2: 資料填寫表單 -->
+        <!-- View 2: 收禮意願確認 (新增) -->
+        <div id="view-willingness" class="view-section">
+            <div class="text-center" style="padding-top: 20px; margin-bottom: 30px;">
+                <i class="fa-solid fa-gift" style="font-size: 56px; color: #f59e0b; margin-bottom: 15px;"></i>
+                <h2 style="margin: 0; color: #1e293b; font-size: 20px;">收禮意願確認</h2>
+                <p style="color: #64748b; font-size: 14px; margin-top: 10px;">親愛的玩家您好，感謝您長期的支持，請問您是否有意願領取本次的 VIP 專屬實體禮品？</p>
+            </div>
+            
+            <button class="btn-primary" style="margin-bottom: 5px;" onclick="switchView('view-form')">有意願收禮</button>
+            <button class="btn-secondary-outline" onclick="switchView('view-decline')">無意願收禮</button>
+        </div>
+
+        <!-- View 3: 放棄原因填寫 (新增) -->
+        <div id="view-decline" class="view-section">
+            <div class="text-center" style="margin-bottom: 20px;">
+                <h2 style="color: #1e293b; margin-bottom: 10px;">放棄收禮原因</h2>
+                <p style="color: #64748b; font-size: 14px;">請告訴我們您放棄收禮的原因，您的寶貴意見將幫助我們未來提供更好的服務。</p>
+            </div>
+            
+            <div class="form-group">
+                <label>詢問原因 (視同備註 / 意見回饋)</label>
+                <textarea rows="5" placeholder="請簡述您放棄領取的原因... (例如：不方便收件、對禮品無需求等)"></textarea>
+            </div>
+            
+            <button class="btn-primary" onclick="switchView('view-decline-success')">確認送出</button>
+            <button class="btn-secondary" onclick="switchView('view-willingness')">返回上一頁</button>
+        </div>
+
+        <!-- View 4: 放棄完成畫面 (新增) -->
+        <div id="view-decline-success" class="view-section text-center" style="padding-top: 50px;">
+            <i class="fa-regular fa-face-smile" style="font-size: 64px; color: #3b82f6; margin-bottom: 20px;"></i>
+            <h2 style="color: #1e293b;">已收到您的回覆</h2>
+            <p style="color: #475569; margin-bottom: 30px; line-height: 1.6; font-size: 15px;">
+                您已放棄本次禮品領取，<br>「包你發」感謝您這段時間的熱情參與，之後還請您多多支持！
+            </p>
+            <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
+        </div>
+
+        <!-- View 5: 資料填寫表單 -->
         <div id="view-form" class="view-section">
             <div class="info-card">
                 歡迎，<strong>玩家 [Hero_99]</strong>！<br>
@@ -217,9 +269,10 @@
             </div>
             
             <button class="btn-primary" onclick="showModal()">確認送出</button>
+            <button class="btn-secondary" onclick="switchView('view-willingness')">上一步</button>
         </div>
 
-        <!-- View 3: 登記完成 -->
+        <!-- View 6: 登記完成 -->
         <div id="view-success" class="view-section text-center" style="padding-top: 50px;">
             <i class="fa-solid fa-circle-check" style="font-size: 64px; color: #22c55e; margin-bottom: 20px;"></i>
             <h2 style="color: #1e293b;">登記完成！</h2>
@@ -228,10 +281,10 @@
                 💡 <strong>溫馨提醒：</strong><br>
                 在 2026/07/30 截止日前，若需修改地址，可再次點擊原通知連結進行更新。
             </div>
-            <button class="btn-secondary" onclick="switchView('view-auth')">返回首頁</button>
+            <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
         </div>
 
-        <!-- View 4: 模擬電子地圖 (E-map) -->
+        <!-- View 7: 模擬電子地圖 (E-map) -->
         <div id="view-emap" class="view-section">
             <button class="btn-secondary" style="margin-top:0; margin-bottom: 15px; padding: 8px 12px; width: auto; font-size: 14px; color: #3b82f6; background: #eff6ff; border-radius: 20px;" onclick="switchView('view-form')">
                 <i class="fa-solid fa-chevron-left"></i> 返回表單
@@ -272,7 +325,7 @@
                 <div id="modalAddressDisplay"><strong>地址：</strong> 台中市西屯區台灣大道三段99號 (宅配)</div>
             </div>
             <div class="modal-actions">
-                <button class="btn-secondary" style="margin-top:0; border: 1px solid #cbd5e1;" onclick="hideModal()">返回修改</button>
+                <button class="btn-secondary-outline" style="margin-top:0;" onclick="hideModal()">返回修改</button>
                 <button class="btn-primary" style="margin-top:0;" onclick="submitForm()">確認送出</button>
             </div>
         </div>
