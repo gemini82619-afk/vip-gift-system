@@ -35,10 +35,12 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+            z-index: 30; /* 確保標題列在最上層 */
         }
         .header h1 { margin: 0; font-size: 18px; font-weight: 500;}
         .content {
-            padding: 30px 20px;
+            padding: 20px 20px 30px 20px; /* 稍微微調 Padding 讓吸頂效果更完美 */
             flex-grow: 1;
             overflow-y: auto;
         }
@@ -102,6 +104,7 @@
         }
         .btn-secondary-outline:hover { background-color: #f8fafc; }
         
+        /* === 更新：提示區塊吸頂效果 === */
         .info-card {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -110,6 +113,12 @@
             margin-bottom: 25px;
             font-size: 14px;
             color: #475569;
+            
+            /* 置頂懸浮關鍵語法 */
+            position: sticky;
+            top: -1px; /* 貼齊頂部 */
+            z-index: 20; /* 確保滑動時蓋過下方表單 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* 產生浮動的陰影感 */
         }
         .text-center { text-align: center; }
         
@@ -118,7 +127,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
             display: none; justify-content: center; align-items: center;
-            z-index: 10;
+            z-index: 50;
         }
         .modal {
             background: white; width: 85%; border-radius: 12px; padding: 25px 20px;
@@ -151,7 +160,7 @@
     <div class="content">
         <!-- View 1: 身分驗證 -->
         <div id="view-auth" class="view-section active">
-            <div class="text-center" style="margin-bottom: 30px;">
+            <div class="text-center" style="margin-bottom: 30px; margin-top: 20px;">
                 <i class="fa-solid fa-shield-halved" style="font-size: 48px; color: #3b82f6; margin-bottom: 15px;"></i>
                 <h2 style="margin: 0; color: #1e293b; font-size: 20px;">身分驗證</h2>
                 <p style="color: #64748b; font-size: 14px;">為了保障您的權益，請輸入您的遊戲暱稱與綁定的手機門號進行驗證。</p>
@@ -171,7 +180,7 @@
             <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">錯誤達 3 次將暫停驗證 15 分鐘</p>
         </div>
 
-        <!-- View 2: 收禮意願確認 (新增) -->
+        <!-- View 2: 收禮意願確認 -->
         <div id="view-willingness" class="view-section">
             <div class="text-center" style="padding-top: 20px; margin-bottom: 30px;">
                 <i class="fa-solid fa-gift" style="font-size: 56px; color: #f59e0b; margin-bottom: 15px;"></i>
@@ -183,9 +192,9 @@
             <button class="btn-secondary-outline" onclick="switchView('view-decline')">無意願收禮</button>
         </div>
 
-        <!-- View 3: 放棄原因填寫 (新增) -->
+        <!-- View 3: 放棄原因填寫 -->
         <div id="view-decline" class="view-section">
-            <div class="text-center" style="margin-bottom: 20px;">
+            <div class="text-center" style="margin-bottom: 20px; margin-top: 20px;">
                 <h2 style="color: #1e293b; margin-bottom: 10px;">放棄收禮原因</h2>
                 <p style="color: #64748b; font-size: 14px;">請告訴我們您放棄收禮的原因，您的寶貴意見將幫助我們未來提供更好的服務。</p>
             </div>
@@ -199,7 +208,7 @@
             <button class="btn-secondary" onclick="switchView('view-willingness')">返回上一頁</button>
         </div>
 
-        <!-- View 4: 放棄完成畫面 (新增) -->
+        <!-- View 4: 放棄完成畫面 -->
         <div id="view-decline-success" class="view-section text-center" style="padding-top: 50px;">
             <i class="fa-regular fa-face-smile" style="font-size: 64px; color: #3b82f6; margin-bottom: 20px;"></i>
             <h2 style="color: #1e293b;">已收到您的回覆</h2>
@@ -211,6 +220,7 @@
 
         <!-- View 5: 資料填寫表單 -->
         <div id="view-form" class="view-section">
+            <!-- 加上了 sticky 效果的提示卡片 -->
             <div class="info-card">
                 歡迎，<strong>玩家 [Hero_99]</strong>！<br>
                 請於 2026/07/30 前填寫並確認您的收件資訊。
@@ -277,7 +287,7 @@
             <i class="fa-solid fa-circle-check" style="font-size: 64px; color: #22c55e; margin-bottom: 20px;"></i>
             <h2 style="color: #1e293b;">登記完成！</h2>
             <p style="color: #64748b; margin-bottom: 30px;">您的收件資訊已成功留存。我們將於活動結束後陸續安排寄出，再請留意物流通知。</p>
-            <div class="info-card" style="text-align: left;">
+            <div class="info-card" style="position: static; box-shadow: none; text-align: left; top: auto; z-index: auto;">
                 💡 <strong>溫馨提醒：</strong><br>
                 在 2026/07/30 截止日前，若需修改地址，可再次點擊原通知連結進行更新。
             </div>
