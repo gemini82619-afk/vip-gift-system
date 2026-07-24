@@ -36,19 +36,46 @@
             padding: 20px;
             text-align: center;
             position: relative;
-            z-index: 30; /* 確保標題列在最上層 */
+            z-index: 30;
         }
         .header h1 { margin: 0; font-size: 18px; font-weight: 500;}
+        
+        /* 取消外層的捲動，將外層設為隱藏 */
         .content {
-            padding: 20px 20px 30px 20px; /* 稍微微調 Padding 讓吸頂效果更完美 */
             flex-grow: 1;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
         }
         
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.3s; }
+        /* 每個視窗預設佔滿高度 */
+        .view-section { display: none; flex-direction: column; flex-grow: 1; height: 100%; overflow: hidden; }
+        .view-section.active { display: flex; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
+        /* 通用的可捲動容器 (用於驗證、意願、完成等畫面) */
+        .scroll-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 30px 20px;
+        }
+
+        /* === 針對表單頁的專屬切分 === */
+        /* 上方固定提示區塊 */
+        .form-fixed-header {
+            padding: 20px 20px 10px 20px;
+            flex-shrink: 0;
+            background-color: #fff;
+            z-index: 10;
+        }
+        /* 下方表單可捲動區塊 (卷軸只會出現在這) */
+        .form-scroll-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px 20px 30px 20px;
+        }
+        /* ============================ */
+
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #334155; font-size: 14px;}
         .form-group input, .form-group select, .form-group textarea {
@@ -104,21 +131,15 @@
         }
         .btn-secondary-outline:hover { background-color: #f8fafc; }
         
-        /* === 更新：提示區塊吸頂效果 === */
+        /* 取消原先的 sticky 效果 */
         .info-card {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             padding: 15px;
-            margin-bottom: 25px;
             font-size: 14px;
             color: #475569;
-            
-            /* 置頂懸浮關鍵語法 */
-            position: sticky;
-            top: -1px; /* 貼齊頂部 */
-            z-index: 20; /* 確保滑動時蓋過下方表單 */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* 產生浮動的陰影感 */
+            margin-bottom: 0;
         }
         .text-center { text-align: center; }
         
@@ -136,7 +157,6 @@
         .modal-data { background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 14px; margin-bottom: 20px;}
         .modal-actions { display: flex; gap: 10px; }
         
-        /* 模擬電子地圖區塊的專屬樣式 */
         .map-placeholder {
             background-color: #e2e8f0; height: 200px; border-radius: 8px; margin-bottom: 20px;
             display: flex; justify-content: center; align-items: center; color: #94a3b8; flex-direction: column;
@@ -160,166 +180,183 @@
     <div class="content">
         <!-- View 1: 身分驗證 -->
         <div id="view-auth" class="view-section active">
-            <div class="text-center" style="margin-bottom: 30px; margin-top: 20px;">
-                <i class="fa-solid fa-shield-halved" style="font-size: 48px; color: #3b82f6; margin-bottom: 15px;"></i>
-                <h2 style="margin: 0; color: #1e293b; font-size: 20px;">身分驗證</h2>
-                <p style="color: #64748b; font-size: 14px;">為了保障您的權益，請輸入您的遊戲暱稱與綁定的手機門號進行驗證。</p>
+            <div class="scroll-container">
+                <div class="text-center" style="margin-bottom: 30px;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 48px; color: #3b82f6; margin-bottom: 15px;"></i>
+                    <h2 style="margin: 0; color: #1e293b; font-size: 20px;">身分驗證</h2>
+                    <p style="color: #64748b; font-size: 14px;">為了保障您的權益，請輸入您的遊戲暱稱與綁定的手機門號進行驗證。</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>遊戲暱稱</label>
+                    <input type="text" placeholder="請輸入您的遊戲暱稱" id="nicknameInput">
+                </div>
+                
+                <div class="form-group">
+                    <label>綁定手機門號</label>
+                    <input type="tel" placeholder="09xxxxxxxx" id="phoneInput">
+                </div>
+                
+                <button class="btn-primary" onclick="switchView('view-willingness')">驗證並繼續</button>
+                <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">錯誤達 3 次將暫停驗證 15 分鐘</p>
             </div>
-            
-            <div class="form-group">
-                <label>遊戲暱稱</label>
-                <input type="text" placeholder="請輸入您的遊戲暱稱" id="nicknameInput">
-            </div>
-            
-            <div class="form-group">
-                <label>綁定手機門號</label>
-                <input type="tel" placeholder="09xxxxxxxx" id="phoneInput">
-            </div>
-            
-            <button class="btn-primary" onclick="switchView('view-willingness')">驗證並繼續</button>
-            <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">錯誤達 3 次將暫停驗證 15 分鐘</p>
         </div>
 
         <!-- View 2: 收禮意願確認 -->
         <div id="view-willingness" class="view-section">
-            <div class="text-center" style="padding-top: 20px; margin-bottom: 30px;">
-                <i class="fa-solid fa-gift" style="font-size: 56px; color: #f59e0b; margin-bottom: 15px;"></i>
-                <h2 style="margin: 0; color: #1e293b; font-size: 20px;">收禮意願確認</h2>
-                <p style="color: #64748b; font-size: 14px; margin-top: 10px;">親愛的玩家您好，感謝您長期的支持，請問您是否有意願領取本次的 VIP 專屬實體禮品？</p>
+            <div class="scroll-container">
+                <div class="text-center" style="padding-top: 20px; margin-bottom: 30px;">
+                    <i class="fa-solid fa-gift" style="font-size: 56px; color: #f59e0b; margin-bottom: 15px;"></i>
+                    <h2 style="margin: 0; color: #1e293b; font-size: 20px;">收禮意願確認</h2>
+                    <p style="color: #64748b; font-size: 14px; margin-top: 10px;">親愛的玩家您好，感謝您長期的支持，請問您是否有意願領取本次的 VIP 專屬實體禮品？</p>
+                </div>
+                
+                <button class="btn-primary" style="margin-bottom: 5px;" onclick="switchView('view-form')">有意願收禮</button>
+                <button class="btn-secondary-outline" onclick="switchView('view-decline')">無意願收禮</button>
             </div>
-            
-            <button class="btn-primary" style="margin-bottom: 5px;" onclick="switchView('view-form')">有意願收禮</button>
-            <button class="btn-secondary-outline" onclick="switchView('view-decline')">無意願收禮</button>
         </div>
 
         <!-- View 3: 放棄原因填寫 -->
         <div id="view-decline" class="view-section">
-            <div class="text-center" style="margin-bottom: 20px; margin-top: 20px;">
-                <h2 style="color: #1e293b; margin-bottom: 10px;">放棄收禮原因</h2>
-                <p style="color: #64748b; font-size: 14px;">請告訴我們您放棄收禮的原因，您的寶貴意見將幫助我們未來提供更好的服務。</p>
+            <div class="scroll-container">
+                <div class="text-center" style="margin-bottom: 20px;">
+                    <h2 style="color: #1e293b; margin-bottom: 10px;">放棄收禮原因</h2>
+                    <p style="color: #64748b; font-size: 14px;">請告訴我們您放棄收禮的原因，您的寶貴意見將幫助我們未來提供更好的服務。</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>詢問原因 (視同備註 / 意見回饋)</label>
+                    <textarea rows="5" placeholder="請簡述您放棄領取的原因... (例如：不方便收件、對禮品無需求等)"></textarea>
+                </div>
+                
+                <button class="btn-primary" onclick="switchView('view-decline-success')">確認送出</button>
+                <button class="btn-secondary" onclick="switchView('view-willingness')">返回上一頁</button>
             </div>
-            
-            <div class="form-group">
-                <label>詢問原因 (視同備註 / 意見回饋)</label>
-                <textarea rows="5" placeholder="請簡述您放棄領取的原因... (例如：不方便收件、對禮品無需求等)"></textarea>
-            </div>
-            
-            <button class="btn-primary" onclick="switchView('view-decline-success')">確認送出</button>
-            <button class="btn-secondary" onclick="switchView('view-willingness')">返回上一頁</button>
         </div>
 
         <!-- View 4: 放棄完成畫面 -->
-        <div id="view-decline-success" class="view-section text-center" style="padding-top: 50px;">
-            <i class="fa-regular fa-face-smile" style="font-size: 64px; color: #3b82f6; margin-bottom: 20px;"></i>
-            <h2 style="color: #1e293b;">已收到您的回覆</h2>
-            <p style="color: #475569; margin-bottom: 30px; line-height: 1.6; font-size: 15px;">
-                您已放棄本次禮品領取，<br>「包你發」感謝您這段時間的熱情參與，之後還請您多多支持！
-            </p>
-            <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
+        <div id="view-decline-success" class="view-section">
+            <div class="scroll-container text-center" style="padding-top: 50px;">
+                <i class="fa-regular fa-face-smile" style="font-size: 64px; color: #3b82f6; margin-bottom: 20px;"></i>
+                <h2 style="color: #1e293b;">已收到您的回覆</h2>
+                <p style="color: #475569; margin-bottom: 30px; line-height: 1.6; font-size: 15px;">
+                    您已放棄本次禮品領取，<br>「包你發」感謝您這段時間的熱情參與，之後還請您多多支持！
+                </p>
+                <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
+            </div>
         </div>
 
         <!-- View 5: 資料填寫表單 -->
         <div id="view-form" class="view-section">
-            <!-- 加上了 sticky 效果的提示卡片 -->
-            <div class="info-card">
-                歡迎，<strong>玩家 [Hero_99]</strong>！<br>
-                請於 2026/07/30 前填寫並確認您的收件資訊。
-            </div>
-            
-            <div class="form-group">
-                <label>真實姓名</label>
-                <input type="text" placeholder="請輸入收件人姓名" value="王大明">
-            </div>
-            
-            <div class="form-group">
-                <label>聯絡電話</label>
-                <input type="tel" placeholder="09xxxxxxxx" value="0912345678">
-            </div>
-            
-            <div class="form-group">
-                <label>配送方式</label>
-                <select id="deliveryMethod" onchange="toggleDeliveryMode()">
-                    <option value="home">宅配到府</option>
-                    <option value="store">超商取貨</option>
-                </select>
-            </div>
-            
-            <!-- 宅配欄位 -->
-            <div id="homeDeliveryFields">
-                <div class="form-group">
-                    <label>收件地址</label>
-                    <div class="form-row" style="margin-bottom: 10px;">
-                        <select style="flex: 1;"><option>台中市</option></select>
-                        <select style="flex: 1;"><option>西屯區</option></select>
-                    </div>
-                    <input type="text" placeholder="請輸入街道巷弄號樓" value="台灣大道三段99號">
+            <!-- 頂部固定區塊 (不會捲動) -->
+            <div class="form-fixed-header">
+                <div class="info-card">
+                    歡迎，<strong>玩家 [Hero_99]</strong>！<br>
+                    請於 2026/07/30 前填寫並確認您的收件資訊。
                 </div>
             </div>
+            
+            <!-- 下方表單內容 (此處產生獨立卷軸) -->
+            <div class="form-scroll-body">
+                <div class="form-group">
+                    <label>真實姓名</label>
+                    <input type="text" placeholder="請輸入收件人姓名" value="王大明">
+                </div>
+                
+                <div class="form-group">
+                    <label>聯絡電話</label>
+                    <input type="tel" placeholder="09xxxxxxxx" value="0912345678">
+                </div>
+                
+                <div class="form-group">
+                    <label>配送方式</label>
+                    <select id="deliveryMethod" onchange="toggleDeliveryMode()">
+                        <option value="home">宅配到府</option>
+                        <option value="store">超商取貨</option>
+                    </select>
+                </div>
+                
+                <!-- 宅配欄位 -->
+                <div id="homeDeliveryFields">
+                    <div class="form-group">
+                        <label>收件地址</label>
+                        <div class="form-row" style="margin-bottom: 10px;">
+                            <select style="flex: 1;"><option>台中市</option></select>
+                            <select style="flex: 1;"><option>西屯區</option></select>
+                        </div>
+                        <input type="text" placeholder="請輸入街道巷弄號樓" value="台灣大道三段99號">
+                    </div>
+                </div>
 
-            <!-- 超商取貨欄位 (預設隱藏) -->
-            <div id="storeDeliveryFields" style="display: none;">
-                <div class="form-group">
-                    <label>選擇取貨門市</label>
-                    <div class="form-row" style="margin-bottom: 10px;">
-                        <select style="flex: 1;">
-                            <option>7-ELEVEN</option>
-                            <option>全家便利商店</option>
-                        </select>
-                        <button class="btn-primary" style="margin-top: 0; flex: 1; padding: 10px; background-color: #475569;" onclick="openEmap()">
-                            <i class="fa-solid fa-map-location-dot"></i> 開啟電子地圖
-                        </button>
+                <!-- 超商取貨欄位 (預設隱藏) -->
+                <div id="storeDeliveryFields" style="display: none;">
+                    <div class="form-group">
+                        <label>選擇取貨門市</label>
+                        <div class="form-row" style="margin-bottom: 10px;">
+                            <select style="flex: 1;">
+                                <option>7-ELEVEN</option>
+                                <option>全家便利商店</option>
+                            </select>
+                            <button class="btn-primary" style="margin-top: 0; flex: 1; padding: 10px; background-color: #475569;" onclick="openEmap()">
+                                <i class="fa-solid fa-map-location-dot"></i> 開啟電子地圖
+                            </button>
+                        </div>
+                        <input type="text" id="selectedStore" placeholder="尚未選擇門市，請點擊上方按鈕" readonly style="background-color: #f8fafc; color: #64748b; cursor: not-allowed;">
                     </div>
-                    <input type="text" id="selectedStore" placeholder="尚未選擇門市，請點擊上方按鈕" readonly style="background-color: #f8fafc; color: #64748b; cursor: not-allowed;">
                 </div>
+                
+                <div class="form-group">
+                    <label>備註 / 意見回饋 (選填)</label>
+                    <textarea rows="3" placeholder="若有特殊需求請在此填寫..."></textarea>
+                </div>
+                
+                <button class="btn-primary" onclick="showModal()">確認送出</button>
+                <button class="btn-secondary" onclick="switchView('view-willingness')">上一步</button>
             </div>
-            
-            <div class="form-group">
-                <label>備註 / 意見回饋 (選填)</label>
-                <textarea rows="3" placeholder="若有特殊需求請在此填寫..."></textarea>
-            </div>
-            
-            <button class="btn-primary" onclick="showModal()">確認送出</button>
-            <button class="btn-secondary" onclick="switchView('view-willingness')">上一步</button>
         </div>
 
         <!-- View 6: 登記完成 -->
-        <div id="view-success" class="view-section text-center" style="padding-top: 50px;">
-            <i class="fa-solid fa-circle-check" style="font-size: 64px; color: #22c55e; margin-bottom: 20px;"></i>
-            <h2 style="color: #1e293b;">登記完成！</h2>
-            <p style="color: #64748b; margin-bottom: 30px;">您的收件資訊已成功留存。我們將於活動結束後陸續安排寄出，再請留意物流通知。</p>
-            <div class="info-card" style="position: static; box-shadow: none; text-align: left; top: auto; z-index: auto;">
-                💡 <strong>溫馨提醒：</strong><br>
-                在 2026/07/30 截止日前，若需修改地址，可再次點擊原通知連結進行更新。
+        <div id="view-success" class="view-section">
+            <div class="scroll-container text-center" style="padding-top: 50px;">
+                <i class="fa-solid fa-circle-check" style="font-size: 64px; color: #22c55e; margin-bottom: 20px;"></i>
+                <h2 style="color: #1e293b;">登記完成！</h2>
+                <p style="color: #64748b; margin-bottom: 30px;">您的收件資訊已成功留存。我們將於活動結束後陸續安排寄出，再請留意物流通知。</p>
+                <div class="info-card" style="text-align: left; margin-bottom: 15px;">
+                    💡 <strong>溫馨提醒：</strong><br>
+                    在 2026/07/30 截止日前，若需修改地址，可再次點擊原通知連結進行更新。
+                </div>
+                <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
             </div>
-            <button class="btn-secondary-outline" onclick="switchView('view-auth')">返回首頁</button>
         </div>
 
         <!-- View 7: 模擬電子地圖 (E-map) -->
         <div id="view-emap" class="view-section">
-            <button class="btn-secondary" style="margin-top:0; margin-bottom: 15px; padding: 8px 12px; width: auto; font-size: 14px; color: #3b82f6; background: #eff6ff; border-radius: 20px;" onclick="switchView('view-form')">
-                <i class="fa-solid fa-chevron-left"></i> 返回表單
-            </button>
-            
-            <div class="map-placeholder">
-                <i class="fa-solid fa-map-location-dot" style="font-size: 32px; color: #ef4444; margin-bottom: 10px;"></i>
-                <span>模擬超商電子地圖 UI</span>
-            </div>
-            
-            <h3 style="margin-top:0; font-size: 16px; color: #334155; margin-bottom: 15px;">附近門市 (請選擇)</h3>
-            
-            <div class="store-item" onclick="confirmStore('7-ELEVEN 逢甲門市 (台中市西屯區逢甲路999號)')">
-                <div class="store-name"><i class="fa-solid fa-store" style="color: #10b981;"></i> 7-ELEVEN 逢甲門市</div>
-                <div class="store-address">台中市西屯區逢甲路999號</div>
-            </div>
-            
-            <div class="store-item" onclick="confirmStore('全家 台中青海店 (台中市西屯區青海路二段100號)')">
-                <div class="store-name"><i class="fa-solid fa-store" style="color: #3b82f6;"></i> 全家 台中青海店</div>
-                <div class="store-address">台中市西屯區青海路二段100號</div>
-            </div>
-            
-            <div class="store-item" onclick="confirmStore('萊爾富 中市逢甲店 (台中市西屯區河南路二段99號)')">
-                <div class="store-name"><i class="fa-solid fa-store" style="color: #ec4899;"></i> 萊爾富 中市逢甲店</div>
-                <div class="store-address">台中市西屯區河南路二段99號</div>
+            <div class="scroll-container">
+                <button class="btn-secondary" style="margin-top:0; margin-bottom: 15px; padding: 8px 12px; width: auto; font-size: 14px; color: #3b82f6; background: #eff6ff; border-radius: 20px;" onclick="switchView('view-form')">
+                    <i class="fa-solid fa-chevron-left"></i> 返回表單
+                </button>
+                
+                <div class="map-placeholder">
+                    <i class="fa-solid fa-map-location-dot" style="font-size: 32px; color: #ef4444; margin-bottom: 10px;"></i>
+                    <span>模擬超商電子地圖 UI</span>
+                </div>
+                
+                <h3 style="margin-top:0; font-size: 16px; color: #334155; margin-bottom: 15px;">附近門市 (請選擇)</h3>
+                
+                <div class="store-item" onclick="confirmStore('7-ELEVEN 逢甲門市 (台中市西屯區逢甲路999號)')">
+                    <div class="store-name"><i class="fa-solid fa-store" style="color: #10b981;"></i> 7-ELEVEN 逢甲門市</div>
+                    <div class="store-address">台中市西屯區逢甲路999號</div>
+                </div>
+                
+                <div class="store-item" onclick="confirmStore('全家 台中青海店 (台中市西屯區青海路二段100號)')">
+                    <div class="store-name"><i class="fa-solid fa-store" style="color: #3b82f6;"></i> 全家 台中青海店</div>
+                    <div class="store-address">台中市西屯區青海路二段100號</div>
+                </div>
+                
+                <div class="store-item" onclick="confirmStore('萊爾富 中市逢甲店 (台中市西屯區河南路二段99號)')">
+                    <div class="store-name"><i class="fa-solid fa-store" style="color: #ec4899;"></i> 萊爾富 中市逢甲店</div>
+                    <div class="store-address">台中市西屯區河南路二段99號</div>
+                </div>
             </div>
         </div>
     </div>
