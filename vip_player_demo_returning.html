@@ -7,217 +7,170 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f1f5f9;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .mobile-container {
-            width: 100%;
-            max-width: 400px;
-            background-color: #fff;
-            height: 800px;
-            border-radius: 20px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        .header {
-            background-color: #1e293b;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            z-index: 30;
-        }
-        .header h1 { margin: 0; font-size: 18px; font-weight: 500;}
-        
-        /* 取消外層的捲動，將外層設為隱藏 */
-        .content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-        }
-        
-        /* 每個視窗預設佔滿高度 */
-        .view-section { display: none; flex-direction: column; flex-grow: 1; height: 100%; overflow: hidden; }
-        .view-section.active { display: flex; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* 通用的可捲動容器 */
-        .scroll-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 30px 20px;
-        }
+    /* === 基礎設定與暗黑背景 === */
+    * { box-sizing: border-box; }
+    body {
+        font-family: 'Noto Sans TC', sans-serif;
+        background-color: #050505; /* 純粹深邃黑 */
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #E2E8F0; /* 預設文字顏色：亮灰白 */
+    }
+    
+    .mobile-container {
+        width: 100%;
+        max-width: 400px;
+        background-color: #121212; /* 碳灰色視窗底色 */
+        height: 800px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15); /* 微微的金色外發光 */
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #27272A; /* 極細的暗灰邊框增加立體感 */
+    }
 
-        /* 上方固定提示區塊 */
-        .form-fixed-header {
-            padding: 20px 20px 10px 20px;
-            flex-shrink: 0;
-            background-color: #fff;
-            z-index: 10;
-        }
-        /* 下方表單可捲動區塊 */
-        .form-scroll-body {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px 20px 30px 20px;
-        }
-        
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #334155; font-size: 14px;}
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 16px;
-            transition: border-color 0.2s;
-        }
-        
-        /* 唯讀狀態樣式 */
-        .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
-            background-color: #f8fafc;
-            color: #94a3b8;
-            cursor: not-allowed;
-            border-color: #e2e8f0;
-            -webkit-text-fill-color: #94a3b8;
-            opacity: 1; 
-        }
+    /* === 頁首 (Header) === */
+    .header {
+        background-color: #000000;
+        color: #FFFFFF;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        z-index: 30;
+        border-bottom: 2px solid;
+        border-image: linear-gradient(90deg, transparent, #BF953F, #FCF6BA, #BF953F, transparent) 1; /* 流金漸層底線 */
+    }
+    .header h1 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 1px;}
+    
+    /* === 佈局與捲動 === */
+    .content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .view-section { display: none; flex-direction: column; flex-grow: 1; height: 100%; overflow: hidden; }
+    .view-section.active { display: flex; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .scroll-container { flex-grow: 1; overflow-y: auto; padding: 30px 20px; }
+    .form-fixed-header { padding: 20px 20px 10px 20px; flex-shrink: 0; background-color: #121212; z-index: 10; }
+    .form-scroll-body { flex-grow: 1; overflow-y: auto; padding: 10px 20px 30px 20px; }
+    
+    /* === 強制覆蓋 Inline Style 的文字與 Icon 顏色 === */
+    h2, h3 { color: #E4CE8A !important; } /* 標題改為香檳金 */
+    p { color: #9CA3AF !important; } /* 內文說明改為淺灰 */
+    strong { color: #FBBF24 !important; } /* 強調字改為亮金 */
+    i.fa-solid:not(.fa-circle-check), i.fa-regular { color: #BF953F !important; } /* 大部分 Icon 套用金色 */
+    i.fa-circle-check { color: #10B981 !important; text-shadow: 0 0 15px rgba(16, 185, 129, 0.4); } /* 成功打勾保留綠色並加上發光 */
+    span[style*="color: #ef4444"], span[style*="color:red;"] { color: #F87171 !important; } /* 錯誤提示改為較柔和的亮紅 */
 
-        .form-group input:focus:not(:disabled), .form-group select:focus:not(:disabled), .form-group textarea:focus:not(:disabled) {
-            outline: none;
-            border-color: #3b82f6;
-        }
-        .form-row { display: flex; gap: 10px; }
-        
-        /* 按鈕樣式 */
-        .btn-primary {
-            width: 100%;
-            background-color: #3b82f6;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 10px;
-        }
-        .btn-primary:hover:not(:disabled) { background-color: #2563eb; }
-        .btn-primary:disabled { background-color: #94a3b8; cursor: not-allowed; }
+    /* === 表單輸入元件 === */
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #D4AF37 !important; font-size: 14px; letter-spacing: 0.5px;}
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 12px;
+        background-color: #1A1A1A; /* 深灰底框 */
+        color: #F8FAFC !important;
+        border: 1px solid #3F3F46;
+        border-radius: 8px; font-family: inherit; font-size: 16px; transition: 0.3s;
+    }
+    
+    /* 焦點發光效果 (Focus) */
+    .form-group input:focus:not(:disabled), .form-group select:focus:not(:disabled), .form-group textarea:focus:not(:disabled) {
+        outline: none;
+        border-color: #BF953F;
+        box-shadow: 0 0 8px rgba(191, 149, 63, 0.4);
+    }
 
-        .btn-secondary {
-            background-color: transparent;
-            color: #64748b;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        .btn-secondary-outline {
-            background-color: transparent;
-            color: #64748b;
-            border: 1px solid #cbd5e1;
-            width: 100%;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-        }
-        .btn-secondary-outline:hover { background-color: #f8fafc; }
-        
-        /* 無意願按鈕樣式 */
-        .btn-danger-outline {
-            background-color: #ffffff;
-            color: #ef4444;
-            border: 1px solid #ef4444;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-        }
-        .btn-danger-outline:hover { background-color: #fef2f2; }
+    /* 唯讀狀態 (Disabled) */
+    .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
+        background-color: #18181B;
+        color: #71717A !important;
+        cursor: not-allowed;
+        border-color: #27272A;
+        -webkit-text-fill-color: #71717A;
+    }
+    .form-row { display: flex; gap: 10px; }
+    
+    /* === 漸層金屬主按鈕 (Btn Primary) === */
+    .btn-primary {
+        width: 100%; border: none; padding: 14px; border-radius: 8px;
+        font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
+        /* 流金漸層 */
+        background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        color: #000000 !important; /* 黑字在金底上對比最好 */
+        box-shadow: 0 4px 15px rgba(191, 149, 63, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(252, 246, 186, 0.4);
+    }
+    .btn-primary:disabled { 
+        background: #27272A !important; color: #52525B !important; box-shadow: none; cursor: not-allowed; 
+    }
 
-        /* 右上角修改按鈕樣式 */
-        .btn-edit-small {
-            position: absolute;
-            right: 12px;
-            bottom: 12px;
-            background-color: #e2e8f0;
-            color: #475569;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-edit-small:hover { background-color: #cbd5e1; }
+    /* === 次要/邊框按鈕 === */
+    .btn-secondary { background: transparent; color: #9CA3AF !important; border: none; width: 100%; padding: 14px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+    .btn-secondary:hover { color: #E2E8F0 !important; }
 
-        .info-card {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-            padding-bottom: 20px; /* 給按鈕留空間 */
-            font-size: 14px;
-            color: #475569;
-            position: relative; /* 供按鈕絕對定位使用 */
-            margin-bottom: 0;
-        }
-        .text-center { text-align: center; }
-        
-        /* Modal Styles */
-        .modal-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none; justify-content: center; align-items: center;
-            z-index: 50;
-        }
-        .modal {
-            background: white; width: 85%; border-radius: 12px; padding: 25px 20px;
-        }
-        .modal h3 { margin-top: 0; color: #1e293b;}
-        .modal-data { background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 14px; margin-bottom: 20px;}
-        .modal-actions { display: flex; gap: 10px; }
-        
-        /* 模擬電子地圖區塊的專屬樣式 */
-        .map-placeholder {
-            background-color: #e2e8f0; height: 200px; border-radius: 8px; margin-bottom: 20px;
-            display: flex; justify-content: center; align-items: center; color: #94a3b8; flex-direction: column;
-            border: 1px dashed #cbd5e1;
-        }
-        .store-item {
-            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s;
-        }
-        .store-item:hover { border-color: #3b82f6; background: #eff6ff; }
-        .store-item .store-name { font-weight: bold; color: #1e293b; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
-        .store-item .store-address { font-size: 13px; color: #64748b; margin-left: 24px;}
-    </style>
+    .btn-secondary-outline {
+        background: transparent; color: #D4AF37 !important; border: 1px solid #BF953F;
+        width: 100%; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 500;
+        cursor: pointer; margin-top: 10px; transition: 0.3s;
+    }
+    .btn-secondary-outline:hover { background: rgba(191, 149, 63, 0.1); box-shadow: 0 0 10px rgba(191, 149, 63, 0.2);}
+
+    /* 灰色取消/無意願按鈕 (適配暗黑版) */
+    .btn-gray-solid { background: #27272A; color: #E2E8F0 !important; border: 1px solid #3F3F46; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.2s; width: 100%;}
+    .btn-gray-solid:hover { background: #3F3F46; }
+    
+    .btn-danger-outline { background: transparent; color: #F87171 !important; border: 1px solid #F87171; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.2s; width: 100%; }
+    .btn-danger-outline:hover { background: rgba(248, 113, 113, 0.1); }
+
+    /* 右下小修改按鈕 */
+    .btn-edit-small {
+        position: absolute; right: 12px; bottom: 12px;
+        background: #BF953F; color: #000 !important; border: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px;
+    }
+    .btn-edit-small:hover { filter: brightness(1.1); }
+    .btn-edit-small i { color: #000 !important; } /* 覆蓋小按鈕內的 Icon 顏色 */
+
+    /* === 資訊卡片 (Info Card) === */
+    .info-card {
+        background-color: #18181B; /* 極深灰 */
+        border: 1px solid #BF953F; /* 金色邊線 */
+        border-radius: 8px; padding: 15px; padding-bottom: 20px; font-size: 14px;
+        color: #E2E8F0 !important; margin-bottom: 0; position: relative;
+        box-shadow: inset 0 0 10px rgba(191, 149, 63, 0.05);
+    }
+    .text-center { text-align: center; }
+    
+    /* === 彈跳視窗 (Modal) === */
+    .modal-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); /* 加深遮罩 */
+        display: none; justify-content: center; align-items: center; z-index: 50;
+    }
+    .modal { background: #18181B; width: 85%; border-radius: 12px; padding: 25px 20px; border: 1px solid #3F3F46; box-shadow: 0 10px 25px rgba(0,0,0,0.5);}
+    .modal-data { background: #121212; padding: 10px; border-radius: 6px; font-size: 14px; margin-bottom: 20px; border: 1px solid #27272A; color:#E2E8F0;}
+    .modal-actions { display: flex; gap: 10px; }
+    
+    /* === 地圖與超商列表 === */
+    .map-placeholder {
+        background-color: #1A1A1A; height: 200px; border-radius: 8px; margin-bottom: 20px;
+        display: flex; justify-content: center; align-items: center; color: #71717A !important; flex-direction: column;
+        border: 1px dashed #BF953F;
+    }
+    .store-item {
+        background: #18181B; border: 1px solid #3F3F46; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.3s;
+    }
+    .store-item:hover { border-color: #BF953F; background: #27272A; box-shadow: 0 0 10px rgba(191, 149, 63, 0.15);}
+    .store-item .store-name { font-weight: bold; color: #E2E8F0 !important; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+    .store-item .store-address { font-size: 13px; color: #9CA3AF !important; margin-left: 24px;}
+</style>
 </head>
 <body>
 
