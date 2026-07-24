@@ -133,10 +133,14 @@
     .btn-edit-small {
         position: absolute; right: 12px; bottom: 12px;
         background: #BF953F; color: #000 !important; border: none;
-        padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; 
+        cursor: pointer; transition: 0.2s; 
+        display: flex; align-items: center; justify-content: center; gap: 4px; /* 加入 justify-content 確保完美置中 */
     }
     .btn-edit-small:hover { filter: brightness(1.1); }
-    .btn-edit-small i { color: #000 !important; } /* 覆蓋小按鈕內的 Icon 顏色 */
+    
+    /* 提高權重 (加上 .fa-solid)，確保筆的 Icon 絕對是黑色，不會被背景吃掉 */
+    .btn-edit-small i.fa-solid { color: #000000 !important; }
 
     /* === 資訊卡片 (Info Card) === */
     .info-card {
