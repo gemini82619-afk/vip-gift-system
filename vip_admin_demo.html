@@ -18,7 +18,7 @@
             --table-header-bg: #243d6b;
             --table-border: #dddddd;
             --btn-blue: #337ab7;
-            --btn-gray: #555555; /* 加深灰色，提高對比度 */
+            --btn-gray: #555555;
             --btn-teal: #3ea0a8;
             --btn-yellow: #f0ad4e;
             --text-main: #333333;
@@ -145,7 +145,7 @@
         }
         table { 
             width: 100%; 
-            min-width: 1250px; /* 增加最小寬度適配新增的欄位 */
+            min-width: 1150px; 
             border-collapse: collapse; 
             text-align: center; 
             table-layout: fixed; 
@@ -158,20 +158,23 @@
         th { background-color: var(--table-header-bg); color: white; font-weight: 500; font-size: 12px; }
         th .svg-icon { width: 0.8em; height: 0.8em; margin-left: 4px; }
         
-        /* 調整欄位寬度：第一欄固定寬度適配玩家ID，操作欄位加寬以容納三個按鈕 */
+        /* 隱藏資料類別欄位 */
+        .hidden-col { display: none !important; }
+
+        /* 調整欄位寬度：第一欄固定寬度，重新分配隱藏欄位的寬度 */
         th:nth-child(1) { width: 130px; } /* 玩家ID */
-        th:nth-child(2) { width: 6%; }    /* 玩家暱稱 */
-        th:nth-child(3) { width: 7%; }    /* 首次填寫時間 */
-        th:nth-child(4) { width: 7%; }    /* 最後異動時間 */
-        th:nth-child(5) { width: 7%; }    /* 收件截止日 */
-        th:nth-child(6) { width: 6%; }    /* 收禮人姓名 */
-        th:nth-child(7) { width: 8%; }    /* 收禮人聯絡門號 */
+        th:nth-child(2) { width: 7%; }    /* 玩家暱稱 */
+        th:nth-child(3) { width: 8%; }    /* 首次填寫時間 */
+        th:nth-child(4) { width: 8%; }    /* 最後異動時間 */
+        th:nth-child(5) { width: 8%; }    /* 收件截止日 */
+        th:nth-child(6) { width: 7%; }    /* 收禮人姓名 */
+        th:nth-child(7) { width: 9%; }    /* 收禮人聯絡門號 */
         th:nth-child(8) { width: 4%; }    /* 配送 */
-        th:nth-child(9) { width: 15%; }   /* 收禮地址 */
-        th:nth-child(10) { width: 5%; }   /* 狀態 */
-        th:nth-child(11) { width: 7%; }   /* 追蹤類別 */
-        th:nth-child(12) { width: 7%; }   /* 資料類別 */
-        th:nth-child(13) { width: 8%; min-width: 100px; } /* 操作 (加寬) */
+        th:nth-child(9) { width: 17%; }   /* 收禮地址 */
+        th:nth-child(10) { width: 6%; }   /* 狀態 */
+        th:nth-child(11) { width: 9%; }   /* 追蹤類別 */
+        /* th:nth-child(12) 隱藏中 */
+        th:nth-child(13) { width: 10%; min-width: 100px; } /* 操作 (加寬) */
 
         tbody tr:nth-child(even) { background-color: #f9f9f9; }
         tbody tr:hover { background-color: #f0f7ff; }
@@ -200,7 +203,6 @@
         .smart-tag { padding: 3px 6px; border-radius: 3px; font-size: 11px; display: inline-block; white-space: nowrap; border: 1px solid; display: inline-flex; align-items: center; gap: 4px; width: fit-content; margin: 0 auto;}
         .smart-tag .svg-icon { font-size: 12px; }
         .tag-info { background: #fcf8e3; color: #8a6d3b; border-color: #faebcc; }
-        .tag-history { background: #f2dede; color: #a94442; border-color: #ebccd1; }
         .tag-edited { background: #d9edf7; color: #31708f; border-color: #bce8f1; }
         .tag-cs-edited { background: #f3e5f5; color: #7b1fa2; border-color: #e1bee7; } 
         .tag-first { background: #e2e3e5; color: #383d41; border-color: #d6d8db; }
@@ -458,9 +460,6 @@
                     <div class="filter-option" data-value="留意備註">
                         <svg class="svg-icon" viewBox="0 0 24 24" style="fill: #8a6d3b;"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg> 留意備註
                     </div>
-                    <div class="filter-option" data-value="歷史異動">
-                        <svg class="svg-icon" viewBox="0 0 24 24" style="fill: #a94442;"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg> 歷史異動
-                    </div>
                     <div class="filter-option" data-value="玩家修改">
                         <svg class="svg-icon" viewBox="0 0 24 24" style="fill: #31708f;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> 玩家修改
                     </div>
@@ -487,7 +486,7 @@
                         <th>收禮地址</th>
                         <th>狀態</th>
                         <th>追蹤類別</th>
-                        <th>資料類別</th>
+                        <th class="hidden-col">資料類別</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -509,8 +508,8 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> 初次通知
                             </span>
                         </td>
-                        <td>
-                            <!-- 透過 Flex 佈局垂直排列複數標籤 -->
+                        <td class="hidden-col">
+                            <!-- 隱藏的資料類別標籤供篩選器讀取 -->
                             <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
                                 <span class="smart-tag tag-info" title="留意備註">
                                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg> 留意備註
@@ -532,7 +531,7 @@
                         </td>
                     </tr>
                     
-                    <!-- Row 2: 歷史異動 -->
+                    <!-- Row 2: 原歷史異動 (已移除資料類別) -->
                     <tr data-plan="中秋">
                         <td class="col-id">JCG8877665544</td>
                         <td style="font-weight: 500;">小飛俠</td>
@@ -549,11 +548,7 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> 初次通知
                             </span>
                         </td>
-                        <td>
-                            <span class="smart-tag tag-history" title="歷史異動">
-                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg> 歷史異動
-                            </span>
-                        </td>
+                        <td class="hidden-col" style="color: #bbb;">—</td>
                         <td>
                             <div style="display: flex; gap: 6px; justify-content: center;">
                                 <button class="btn-sm btn-view" title="檢視歷程" onclick="openViewModal('JCG8877665544', '小飛俠', 'false')">
@@ -583,7 +578,7 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> 初次通知
                             </span>
                         </td>
-                        <td>
+                        <td class="hidden-col">
                             <span class="smart-tag tag-edited" title="玩家修改">
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> 玩家修改
                             </span>
@@ -617,7 +612,7 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> 初次通知
                             </span>
                         </td>
-                        <td style="color: #bbb;">—</td>
+                        <td class="hidden-col" style="color: #bbb;">—</td>
                         <td>
                             <div style="display: flex; gap: 6px; justify-content: center;">
                                 <button class="btn-sm btn-view" title="檢視歷程" onclick="openViewModal('JCG9988776655', '美麗人生', 'false')">
@@ -647,7 +642,7 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> 主動聯繫
                             </span>
                         </td>
-                        <td style="color: #bbb;">—</td>
+                        <td class="hidden-col" style="color: #bbb;">—</td>
                         <td>
                             <div style="display: flex; gap: 6px; justify-content: center;">
                                 <button class="btn-sm btn-gray" title="主動核資" onclick="openVerificationModal('JCG1234567890', '發財哥', '2026-07-30', '中秋')">
@@ -680,7 +675,7 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> 等候進線
                             </span>
                         </td>
-                        <td style="color: #bbb;">—</td>
+                        <td class="hidden-col" style="color: #bbb;">—</td>
                         <td>
                             <div style="display: flex; gap: 6px; justify-content: center;">
                                 <button class="btn-sm btn-view" title="檢視歷程" onclick="openViewModal('JCG9876543210', '新年好', 'empty')">
@@ -693,7 +688,7 @@
                         </td>
                     </tr>
                     
-                    <!-- Row 7: 客服編輯 + 歷史異動 (複數顯示展示) -->
+                    <!-- Row 7: 客服編輯 (移除歷史異動) -->
                     <tr data-plan="中秋">
                         <td class="col-id">JCG1122334455</td>
                         <td style="font-weight: 500;">神之手</td>
@@ -710,16 +705,10 @@
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> 初次通知
                             </span>
                         </td>
-                        <td>
-                            <!-- 透過 Flex 佈局垂直排列複數標籤 -->
-                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                                <span class="smart-tag tag-cs-edited" title="客服編輯">
-                                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8.5 13H9v-1.5l5.1-5.1 1.5 1.5L10.5 16zm6.8-6.8l-1.5 1.5-1.5-1.5 1.5-1.5c.2-.2.5-.2.7 0l.8.8c.2.2.2.5 0 .7z"/></svg> 客服編輯
-                                </span>
-                                <span class="smart-tag tag-history" title="歷史異動">
-                                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg> 歷史異動
-                                </span>
-                            </div>
+                        <td class="hidden-col">
+                            <span class="smart-tag tag-cs-edited" title="客服編輯">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8.5 13H9v-1.5l5.1-5.1 1.5 1.5L10.5 16zm6.8-6.8l-1.5 1.5-1.5-1.5 1.5-1.5c.2-.2.5-.2.7 0l.8.8c.2.2.2.5 0 .7z"/></svg> 客服編輯
+                            </span>
                         </td>
                         <td>
                             <div style="display: flex; gap: 6px; justify-content: center;">
@@ -875,7 +864,7 @@
                             <button class="btn-channel">LINE</button>
                             <button class="btn-channel active">SVIP</button>
                         </div>
-                        <input type="text" class="form-control" value="奧斯頓馬丁">
+                        <input type="text" class="form-control" value="新台灣馬丁">
                     </div>
                     <div style="color: #5c35b1; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;">
                         <svg class="svg-icon" viewBox="0 0 24 24" style="fill: currentColor;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> 
@@ -962,7 +951,7 @@
 
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
-                if (row.cells.length < 12) continue; // Updated cell count requirement
+                if (row.cells.length < 12) continue;
                 
                 const rowPlan = row.getAttribute('data-plan') || '';
                 const statusCell = row.cells[9].textContent || row.cells[9].innerText;
@@ -992,10 +981,10 @@
             document.getElementById('modal-player-id').innerText = playerId;
             
             const prevChannel = "LINE";
-            const prevChannelName = "奧斯頓馬丁"; // 新增頻道名稱
+            const prevChannelName = "新台灣馬丁"; 
             const prevName = "張三豐";
-            const prevPhone = "0911111111";
-            const prevAddress = "天龍市天龍區天龍路天字第一號";
+            const prevPhone = "0988777666";
+            const prevAddress = "高雄市三民區建國二路100號";
             
             // 決定膠囊顏色
             let pillClass = "pill-line";
@@ -1178,8 +1167,8 @@
                     alertBox.innerHTML = '<div style="background-color: #e2e3e5; color: #383d41; padding: 10px; text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #d6d8db; display: flex; align-items: center; justify-content: center; gap: 6px;"><svg class="svg-icon" viewBox="0 0 24 24" style="fill: currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> 尚未填寫，且過往無成功留存紀錄。需待玩家主動進線。</div>';
                 } else {
                     nameInput.value = "張三豐";
-                    phoneInput.value = "0911111111";
-                    addressInput.value = "天龍市天龍區天龍路天字第一號";
+                    phoneInput.value = "0988777666";
+                    addressInput.value = "高雄市三民區建國二路100號";
                     alertBox.innerHTML = '<div style="background-color: #fff3cd; color: #856404; padding: 10px; text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ffeeba; display: flex; align-items: center; justify-content: center; gap: 6px;"><svg class="svg-icon" viewBox="0 0 24 24" style="fill: currentColor;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> 尚未填寫，目前帶入顯示為：前期 (2026新年VIP計畫) 留存資料</div>';
                 }
             }
