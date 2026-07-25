@@ -398,8 +398,8 @@
                     匯出出貨表
                 </button>
             </div>
-            <div class="stats">
-                共 9 筆資料 | 已留存 5 筆 | 未留存 2 筆 | 無意願 1 筆 | 已寄出 1 筆
+            <div class="stats" id="table-stats">
+            共 7 筆資料 | 已留存 3 筆 | 未留存 2 筆 | 無意願 1 筆 | 已寄出 1 筆
             </div>
         </div>
 
@@ -923,35 +923,61 @@
         }
 
         function applyFilters() {
-            toggleShippedColumn(activeStatus);
+    toggleShippedColumn(activeStatus);
 
-            const searchInput = document.getElementById("searchInput").value.toUpperCase();
-            const tbody = document.querySelector(".table-wrapper tbody");
-            const rows = tbody.getElementsByTagName("tr");
+    const searchInput = document.getElementById("searchInput").value.toUpperCase();
+    const tbody = document.querySelector(".table-wrapper tbody");
+    const rows = tbody.getElementsByTagName("tr");
 
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                if (row.cells.length < 13) continue;
-                
-                const rowPlan = row.getAttribute('data-plan') || '';
-                const statusCell = row.cells[9].textContent || row.cells[9].innerText;
-                const trackingTagCell = row.cells[10].textContent || row.cells[10].innerText;
-                const dataTagCell = row.cells[12].textContent || row.cells[12].innerText;
-                const rowText = row.textContent || row.innerText;
+    // 1. 初始化計數器
+    let countTotal = 0;
+    let countSaved = 0;
+    let countUnsaved = 0;
+    let countReject = 0;
+    let countShipped = 0;
 
-                let planMatch = (activePlan === '全部' || rowPlan === activePlan);
-                let statusMatch = (activeStatus === '全部' || statusCell.includes(activeStatus));
-                let trackingMatch = (activeTrackingTag === '全部' || trackingTagCell.includes(activeTrackingTag));
-                let dataMatch = (activeDataTag === '全部' || dataTagCell.includes(activeDataTag));
-                let searchMatch = (searchInput === '' || rowText.toUpperCase().includes(searchInput));
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (row.cells.length < 13) continue;
+        
+        const rowPlan = row.getAttribute('data-plan') || '';
+        const statusCell = row.cells[9].textContent || row.cells[9].innerText;
+        const trackingTagCell = row.cells[10].textContent || row.cells[10].innerText;
+        const dataTagCell = row.cells[12].textContent || row.cells[12].innerText;
+        const rowText = row.textContent || row.innerText;
 
-                if (planMatch && statusMatch && trackingMatch && dataMatch && searchMatch) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
+        let planMatch = (activePlan === '全部' || rowPlan === activePlan);
+        let statusMatch = (activeStatus === '全部' || statusCell.includes(activeStatus));
+        let trackingMatch = (activeTrackingTag === '全部' || trackingTagCell.includes(activeTrackingTag));
+        let dataMatch = (activeDataTag === '全部' || dataTagCell.includes(activeDataTag));
+        let searchMatch = (searchInput === '' || rowText.toUpperCase().includes(searchInput));
+
+        // 判斷該列是否符合所有篩選條件
+        if (planMatch && statusMatch && trackingMatch && dataMatch && searchMatch) {
+            row.style.display = ""; // 顯示符合條件的資料列
+            
+            // 2. 如果該列顯示，則進行狀態計數
+            countTotal++;
+            if (statusCell.includes('已留存')) {
+                countSaved++;
+            } else if (statusCell.includes('未留存')) {
+                countUnsaved++;
+            } else if (statusCell.includes('無意願')) {
+                countReject++;
+            } else if (statusCell.includes('已寄出')) {
+                countShipped++;
             }
+        } else {
+            row.style.display = "none"; // 隱藏不符合條件的資料列
         }
+    }
+
+    // 3. 將計算結果動態渲染到畫面上的統計區塊
+    const statsDiv = document.getElementById('table-stats');
+    if (statsDiv) {
+        statsDiv.innerHTML = `共 ${countTotal} 筆資料 | 已留存 ${countSaved} 筆 | 未留存 ${countUnsaved} 筆 | 無意願 ${countReject} 筆 | 已寄出 ${countShipped} 筆`;
+    }
+}
 
         function filterTable() {
             applyFilters();
