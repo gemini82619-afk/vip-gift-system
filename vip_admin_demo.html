@@ -161,6 +161,152 @@
         /* 隱藏資料類別欄位 */
         .hidden-col { display: none !important; }
 
+        /* ============================================================ */
+        /* 編輯發送名單 專屬頁面樣式                                        */
+        /* ============================================================ */
+        .edit-page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 15px;
+        }
+        .btn-back {
+            background-color: #ffffff;
+            border: 1px solid var(--table-border);
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            fill: var(--text-main);
+            transition: 0.2s;
+        }
+        .btn-back:hover { background-color: #f0f2f5; }
+        .edit-page-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .edit-plan-select {
+            background-color: var(--header-bg);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 14px;
+            padding-right: 26px;
+        }
+        .edit-plan-select option { color: #333; background-color: #fff; }
+        .edit-plan-select option.add-new-option { color: var(--btn-blue); font-weight: bold; }
+
+        .edit-tab-bar {
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid var(--table-border);
+            margin-bottom: 15px;
+        }
+        .edit-tab {
+            padding: 10px 18px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            fill: var(--text-muted);
+            margin-bottom: -2px;
+        }
+        .edit-tab.active {
+            color: var(--btn-blue);
+            border-bottom-color: var(--btn-blue);
+            fill: var(--btn-blue);
+        }
+        .edit-tab:hover:not(.active) { color: #333; }
+
+        .edit-panel { display: none; }
+        .edit-panel.active { display: block; }
+
+        .edit-card {
+            background-color: #ffffff;
+            border: 1px solid var(--table-border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            padding: 18px 20px;
+            margin-bottom: 15px;
+        }
+        .edit-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+        .edit-hint { color: var(--text-muted); font-size: 12.5px; margin: 0 0 15px 0; line-height: 1.6; }
+
+        .upload-dropzone {
+            border: 2px dashed #b8c2d6;
+            border-radius: 6px;
+            background-color: #f8f9fc;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upload-dropzone:hover { background-color: #eef1f8; border-color: var(--btn-blue); }
+        .upload-dropzone-text { margin-top: 10px; font-size: 13px; color: var(--text-muted); }
+        .csv-filename { margin-top: 10px; font-size: 13px; color: var(--btn-blue); font-weight: 500; }
+
+        .edit-actions-row { display: flex; gap: 10px; margin-top: 15px; }
+
+        .manual-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px 20px;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-success { background-color: #dff0d8; color: #3c763d; }
+        .status-warning { background-color: #fcf8e3; color: #8a6d3b; }
+        .status-danger { background-color: #f2dede; color: #a94442; }
+
+        .btn-delete-row {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+            padding: 4px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-delete-row:hover { background-color: #ebccd1; }
+
+        .batch-schedule-row { display: flex; align-items: center; gap: 12px; }
+        .batch-schedule-row .form-control { margin-bottom: 0; }
+
         /* 動態隱藏/顯示的類別：確保寬度一致 */
         .col-tracking-header, .col-shipped-header { width: 9%; }
 
@@ -287,7 +433,7 @@
         .btn-channel { padding: 4px 12px; border: 1px solid #ccc; background: white; border-radius: 4px; font-size: 12px; cursor: pointer; color: #555;}
         .btn-channel.active { border-color: #f0ad4e; color: #f0ad4e; font-weight: bold; background: #fffdf6; }
         
-        .history-log { border: 1px solid #ccc; border-radius: 4px; padding: 10px; height: 180px; overflow-y: auto; font-size: 13px; color: #333; line-height: 1.5; margin-bottom: 15px; flex-grow: 1;}
+        .history-log { border: 1px solid #ccc; border-radius: 4px; padding: 10px; height: 50%; min-height: 220px; overflow-y: auto; font-size: 13px; color: #333; line-height: 1.5; margin-bottom: 12px; }
         
         .modal-footer-large {
             display: flex; gap: 15px;
@@ -296,6 +442,47 @@
         .btn-reject { flex: 1; padding: 10px; border: 1px solid #d9534f; background: white; color: #d9534f; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;}
         .btn-save { flex: 1; padding: 10px; border: none; background: #e8f0fe; color: #1a73e8; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;}
         .btn-save:hover { background: #d2e3fc; }
+
+        .confirm-retain-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .confirm-retain-checkbox input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #1a73e8;
+        }
+
+        /* 確認留存提醒視窗 */
+        .modal-box-confirm {
+            background: white;
+            width: 380px;
+            border-radius: 6px;
+            padding: 28px 26px 22px 26px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .confirm-icon-wrap { margin-bottom: 14px; }
+        .confirm-message { font-size: 14px; color: #333; line-height: 1.7; margin: 0 0 22px 0; font-weight: 500; }
+        .confirm-footer { display: flex; gap: 12px; }
+        .btn-confirm-retain {
+            flex: 1; padding: 10px; border: none; background: #5cb85c; color: white;
+            border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13.5px;
+        }
+        .btn-confirm-retain:hover { background: #4cae4c; }
+        .btn-save-plain {
+            flex: 1; padding: 10px; border: 1px solid #ccc; background: white; color: #555;
+            border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13.5px;
+        }
+        .btn-save-plain:hover { background: #f5f5f5; }
 
         .history-data {
             background-color: #f9f9f9; 
@@ -382,12 +569,13 @@
     </div>
 
     <div class="main-container">
+      <div id="mainListView">
         <!-- Toolbar -->
         <div class="toolbar">
             <div>
-                <button class="btn btn-add">
-                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    匯入發送名單
+                <button class="btn btn-add" onclick="openListEditView()">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    編輯發送名單
                 </button>
                 <button class="btn btn-refresh">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -688,6 +876,226 @@
 </tbody>
             </table>
         </div>
+      </div>
+      <!-- ============================================================ -->
+      <!-- 編輯發送名單 專屬頁面 (非彈窗，切換整頁內容)                      -->
+      <!-- ============================================================ -->
+      <div id="listEditView" style="display:none;">
+        <div class="edit-page-header">
+            <button class="btn-back" onclick="closeListEditView()">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                返回名單列表
+            </button>
+            <div class="edit-page-title">
+                編輯發送名單
+                <select class="edit-plan-select" id="editPlanSelect" onchange="handlePlanSelectChange(this)">
+                    <option value="2026 中秋禮" selected>2026 中秋禮</option>
+                    <option value="2026 過年禮">2026 過年禮</option>
+                    <option value="__add_new__" class="add-new-option">＋ 新增計畫...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="edit-tab-bar">
+            <div class="edit-tab active" data-target="panel-import" onclick="switchEditTab(this)">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                批次匯入名單
+            </div>
+            <div class="edit-tab" data-target="panel-manual" onclick="switchEditTab(this)">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-8-3v-2H5V7H3v2H1v2h2v2h2v-2h2zm8 1c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg>
+                單筆新增/刪減
+            </div>
+            <div class="edit-tab" data-target="panel-schedule" onclick="switchEditTab(this)">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                批次/單筆 寄出時間
+            </div>
+        </div>
+
+        <!-- Panel 1: 批次匯入名單 -->
+        <div class="edit-panel active" id="panel-import">
+            <div class="edit-card">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#337ab7;"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                    上傳CSV批次匯入
+                </h3>
+                <p class="edit-hint">請上傳符合格式的CSV檔案，系統將自動新增名單。欄位需包含：<strong>玩家ID、玩家暱稱、收禮人姓名、聯絡門號、收禮地址</strong>。</p>
+
+                <div class="upload-dropzone" onclick="document.getElementById('csvFileInput').click()">
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="width:36px;height:36px;fill:#337ab7;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                    <div class="upload-dropzone-text">
+                        <strong>點擊選擇檔案</strong> 或將 CSV 檔案拖曳至此處
+                    </div>
+                    <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleCsvSelected(this)">
+                </div>
+                <div id="csvFileName" class="csv-filename" style="display:none;"></div>
+
+                <div class="edit-actions-row">
+                    <button class="btn btn-view">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        下載匯入範本
+                    </button>
+                    <button class="btn btn-add" onclick="simulateImport()">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                        開始匯入
+                    </button>
+                </div>
+            </div>
+
+            <div class="edit-card">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#777;"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    匯入紀錄
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>匯入時間</th>
+                            <th>檔案名稱</th>
+                            <th>匯入筆數</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="importHistoryBody">
+                        <tr>
+                            <td>2026-08-01 09:12</td>
+                            <td>中秋禮_發送名單_第一批.csv</td>
+                            <td>120</td>
+                            <td><span class="status-pill status-success">匯入成功</span></td>
+                        </tr>
+                        <tr>
+                            <td>2026-07-28 14:35</td>
+                            <td>中秋禮_發送名單_補件.csv</td>
+                            <td>8</td>
+                            <td><span class="status-pill status-warning">2筆格式錯誤</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel 2: 單筆名單新增/刪減 -->
+        <div class="edit-panel" id="panel-manual">
+            <div class="edit-card">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#337ab7;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    新增單筆名單
+                </h3>
+                <div class="manual-form-grid">
+                    <div class="form-group">
+                        <label>玩家ID</label>
+                        <input type="text" class="form-control" id="manual-uid" placeholder="例：P10029">
+                    </div>
+                    <div class="form-group">
+                        <label>玩家暱稱</label>
+                        <input type="text" class="form-control" id="manual-nickname" placeholder="例：幸運兔">
+                    </div>
+                    <div class="form-group">
+                        <label>收件截止日</label>
+                        <input type="date" class="form-control" id="manual-deadline">
+                    </div>
+                </div>
+                <div class="edit-actions-row">
+                    <button class="btn btn-add" onclick="addManualEntry()">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        新增至名單
+                    </button>
+                </div>
+            </div>
+
+            <div class="edit-card">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#777;"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.21v6.7zm14 0v-6.7l-6 3.38v6.71l6-3.38z"/></svg>
+                    目前名單 <span class="stats" style="margin-left:6px;">(共 <span id="manualListCount">3</span> 筆)</span>
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>玩家ID</th>
+                            <th>玩家暱稱</th>
+                            <th>收件截止日</th>
+                            <th>狀態</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manualListBody">
+                        <tr>
+                            <td>P10001</td>
+                            <td>新台灣馬丁</td>
+                            <td>2026-08-30</td>
+                            <td><span class="status-pill status-success">已留存</span></td>
+                            <td><button class="btn-delete-row" onclick="removeManualEntry(this)">刪除</button></td>
+                        </tr>
+                        <tr>
+                            <td>P10002</td>
+                            <td>佛系玩家</td>
+                            <td>2026-08-30</td>
+                            <td><span class="status-pill status-danger">無意願</span></td>
+                            <td><button class="btn-delete-row" onclick="removeManualEntry(this)">刪除</button></td>
+                        </tr>
+                        <tr>
+                            <td>P10003</td>
+                            <td>躊躇的貓</td>
+                            <td>2026-08-30</td>
+                            <td><span class="status-pill status-warning">未留存</span></td>
+                            <td><button class="btn-delete-row" onclick="removeManualEntry(this)">刪除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel 3: 批次/單筆 寄出時間 -->
+        <div class="edit-panel" id="panel-schedule">
+            <div class="edit-card">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#337ab7;"><path d="M20 8h-3V4H3v13h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM8 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm10 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm.5-6.5h-4.5V9.5h3.2l1.3 1.8v1.2z"/></svg>
+                    批次設定寄出時間
+                </h3>
+                <p class="edit-hint">套用至目前篩選範圍內所有「已留存、尚未寄出」的名單。</p>
+                <div class="batch-schedule-row">
+                    <input type="datetime-local" class="form-control" id="batchSendTime" style="max-width: 260px;">
+                    <button class="btn btn-add" onclick="applyBatchSchedule()">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                        套用至全部已留存名單
+                    </button>
+                </div>
+            </div>
+
+            <div class="edit-card">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#777;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    單筆寄出時間設定
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>玩家ID</th>
+                            <th>收禮人姓名</th>
+                            <th>目前寄出時間</th>
+                            <th style="width: 260px;">設定時間</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>P10001</td>
+                            <td>王大明</td>
+                            <td id="ship-time-P10001">—</td>
+                            <td><input type="datetime-local" class="form-control" id="ship-input-P10001"></td>
+                            <td><button class="btn btn-view" style="padding:5px 10px;" onclick="applySingleSchedule('P10001')">套用</button></td>
+                        </tr>
+                        <tr>
+                            <td>P10005</td>
+                            <td>李小華</td>
+                            <td id="ship-time-P10005">2026-08-01 10:30</td>
+                            <td><input type="datetime-local" class="form-control" id="ship-input-P10005"></td>
+                            <td><button class="btn btn-view" style="padding:5px 10px;" onclick="applySingleSchedule('P10005')">套用</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
 
     <!-- Verification Modal (主動核資視窗) -->
     <div class="modal-overlay" id="verificationModal">
@@ -843,12 +1251,31 @@
                         2026/07/22 主動透過先前進線渠道詢問收禮意願。<br>
                         2026/07/23 玩家表示沒有意願收禮，與玩家確認原因中，玩家表示家中不方便收禮，與玩家確認是否透過超商取貨，待玩家回覆。
                     </div>
-                    
+
+                    <label class="confirm-retain-checkbox">
+                        <input type="checkbox" id="edit-confirm-retain">
+                        <span>確認留存</span>
+                    </label>
+
                     <div class="modal-footer-large">
                         <button class="btn-reject" onclick="closeEditModal()">無意願收禮</button>
-                        <button class="btn-save" onclick="closeEditModal()">儲存</button>
+                        <button class="btn-save" onclick="trySaveEdit()">儲存</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Retain Reminder Modal (確認留存提醒視窗) -->
+    <div class="modal-overlay" id="confirmRetainModal" style="z-index: 2000;">
+        <div class="modal-box-confirm">
+            <div class="confirm-icon-wrap">
+                <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#f0ad4e; width:32px; height:32px;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            </div>
+            <p class="confirm-message">本此資料未勾選確認留存，請確認是否已核資完成</p>
+            <div class="confirm-footer">
+                <button class="btn-confirm-retain" onclick="confirmRetainAndSave()">確認留存</button>
+                <button class="btn-save-plain" onclick="saveWithoutConfirm()">儲存</button>
             </div>
         </div>
     </div>
@@ -1148,6 +1575,7 @@
         }
 
         function openEditModal(btn) {
+            document.getElementById('edit-confirm-retain').checked = false;
             const tr = btn.closest('tr');
             const playerId = tr.querySelector('.col-id').textContent.trim();
             const status = tr.querySelector('.status-text').textContent.trim();
@@ -1198,6 +1626,148 @@
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
+        }
+
+        function trySaveEdit() {
+            const confirmBox = document.getElementById('edit-confirm-retain');
+            if (confirmBox.checked) {
+                // 已勾選確認留存，直接儲存
+                closeEditModal();
+            } else {
+                // 未勾選，顯示提醒視窗
+                document.getElementById('confirmRetainModal').style.display = 'flex';
+            }
+        }
+
+        function confirmRetainAndSave() {
+            // 補勾選確認留存，並完成儲存
+            document.getElementById('edit-confirm-retain').checked = true;
+            document.getElementById('confirmRetainModal').style.display = 'none';
+            closeEditModal();
+        }
+
+        function saveWithoutConfirm() {
+            // 維持未勾選狀態，直接儲存
+            document.getElementById('confirmRetainModal').style.display = 'none';
+            closeEditModal();
+        }
+
+        /* ============================================================ */
+        /* 編輯發送名單 專屬頁面 - 相關函式                                   */
+        /* ============================================================ */
+        function openListEditView() {
+            document.getElementById('mainListView').style.display = 'none';
+            document.getElementById('listEditView').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function handlePlanSelectChange(selectEl) {
+            if (selectEl.value === '__add_new__') {
+                const newPlanName = prompt('請輸入新計畫名稱（例：2027 春節禮）');
+                if (newPlanName && newPlanName.trim() !== '') {
+                    const trimmedName = newPlanName.trim();
+                    // 檢查是否已存在同名選項，避免重複新增
+                    const exists = Array.from(selectEl.options).some(opt => opt.value === trimmedName);
+                    if (!exists) {
+                        const newOption = document.createElement('option');
+                        newOption.value = trimmedName;
+                        newOption.textContent = trimmedName;
+                        // 插入至「＋ 新增計畫...」選項之前
+                        const addNewOption = selectEl.querySelector('option[value="__add_new__"]');
+                        selectEl.insertBefore(newOption, addNewOption);
+                    }
+                    selectEl.value = trimmedName;
+                } else {
+                    // 使用者取消或未輸入，還原為原本選擇的計畫
+                    selectEl.value = selectEl.dataset.lastValue || '2026 中秋禮';
+                }
+            }
+            selectEl.dataset.lastValue = selectEl.value;
+        }
+
+        function closeListEditView() {
+            document.getElementById('listEditView').style.display = 'none';
+            document.getElementById('mainListView').style.display = 'block';
+        }
+
+        function switchEditTab(tabEl) {
+            document.querySelectorAll('.edit-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.edit-panel').forEach(p => p.classList.remove('active'));
+            tabEl.classList.add('active');
+            document.getElementById(tabEl.dataset.target).classList.add('active');
+        }
+
+        function handleCsvSelected(input) {
+            const nameBox = document.getElementById('csvFileName');
+            if (input.files && input.files.length > 0) {
+                nameBox.style.display = 'block';
+                nameBox.textContent = '已選擇檔案：' + input.files[0].name;
+            }
+        }
+
+        function simulateImport() {
+            const fileInput = document.getElementById('csvFileInput');
+            const fileName = (fileInput.files && fileInput.files.length > 0) ? fileInput.files[0].name : '示範匯入檔案.csv';
+            const tbody = document.getElementById('importHistoryBody');
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const timeStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${timeStr}</td><td>${fileName}</td><td>—</td><td><span class="status-pill status-success">匯入成功 (示範)</span></td>`;
+            tbody.insertBefore(row, tbody.firstChild);
+            alert('（示範）已模擬匯入完成，可於下方「匯入紀錄」查看結果。');
+        }
+
+        function addManualEntry() {
+            const uid = document.getElementById('manual-uid').value.trim();
+            const nickname = document.getElementById('manual-nickname').value.trim();
+            const deadline = document.getElementById('manual-deadline').value.trim();
+
+            if (!uid || !nickname) {
+                alert('請至少填寫「玩家ID」與「玩家暱稱」');
+                return;
+            }
+
+            const tbody = document.getElementById('manualListBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${uid}</td><td>${nickname}</td><td>${deadline || '—'}</td><td><span class="status-pill status-warning">未留存</span></td><td><button class="btn-delete-row" onclick="removeManualEntry(this)">刪除</button></td>`;
+            tbody.appendChild(row);
+
+            ['manual-uid','manual-nickname','manual-deadline'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            updateManualListCount();
+        }
+
+        function removeManualEntry(btn) {
+            if (confirm('確定要從發送名單中刪除此筆資料嗎？')) {
+                btn.closest('tr').remove();
+                updateManualListCount();
+            }
+        }
+
+        function updateManualListCount() {
+            const count = document.getElementById('manualListBody').querySelectorAll('tr').length;
+            document.getElementById('manualListCount').textContent = count;
+        }
+
+        function applyBatchSchedule() {
+            const val = document.getElementById('batchSendTime').value;
+            if (!val) {
+                alert('請先選擇要套用的寄出時間');
+                return;
+            }
+            alert('（示範）已將寄出時間 ' + val.replace('T', ' ') + ' 套用至全部已留存、尚未寄出的名單。');
+        }
+
+        function applySingleSchedule(uid) {
+            const input = document.getElementById('ship-input-' + uid);
+            if (!input.value) {
+                alert('請先選擇要套用的寄出時間');
+                return;
+            }
+            document.getElementById('ship-time-' + uid).textContent = input.value.replace('T', ' ');
+            alert('（示範）已更新玩家 ' + uid + ' 的寄出時間。');
         }
     </script>
 </body>
