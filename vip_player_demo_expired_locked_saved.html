@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玩家端 - 禮品收件資訊 (逾期僅供查看)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+    /* === 基礎設定與暗黑背景 === */
+    * { box-sizing: border-box; }
+    body {
+        font-family: 'Noto Sans TC', sans-serif;
+        background-color: #050505; /* 純粹深邃黑 */
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #E2E8F0; /* 預設文字顏色：亮灰白 */
+    }
+
+    .mobile-container {
+        width: 100%;
+        max-width: 400px;
+        background-color: #121212; /* 碳灰色視窗底色 */
+        height: 800px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15); /* 微微的金色外發光 */
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #27272A; /* 極細的暗灰邊框增加立體感 */
+    }
+
+    /* === 頁首 (Header) === */
+    .header {
+        background-color: #000000;
+        color: #FFFFFF;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        z-index: 30;
+        border-bottom: 2px solid;
+        border-image: linear-gradient(90deg, transparent, #BF953F, #FCF6BA, #BF953F, transparent) 1; /* 流金漸層底線 */
+    }
+    .header h1 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 1px;}
+
+    /* === 佈局與捲動 === */
+    .content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .view-section { display: none; flex-direction: column; flex-grow: 1; height: 100%; overflow: hidden; }
+    .view-section.active { display: flex; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+    .scroll-container { flex-grow: 1; overflow-y: auto; padding: 30px 20px; }
+    .form-fixed-header { padding: 20px 20px 10px 20px; flex-shrink: 0; background-color: #121212; z-index: 10; }
+    .form-scroll-body { flex-grow: 1; overflow-y: auto; padding: 10px 20px 30px 20px; }
+
+    /* === 強制覆蓋 Inline Style 的文字與 Icon 顏色 === */
+    h2, h3 { color: #E4CE8A !important; } /* 標題改為香檳金 */
+    p { color: #9CA3AF !important; } /* 內文說明改為淺灰 */
+    strong { color: #FBBF24 !important; } /* 強調字改為亮金 */
+    i.fa-solid, i.fa-regular { color: #BF953F !important; }
+
+    /* === 表單輸入元件 === */
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #D4AF37 !important; font-size: 14px; letter-spacing: 0.5px;}
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 12px;
+        background-color: #1A1A1A; /* 深灰底框 */
+        color: #F8FAFC !important;
+        border: 1px solid #3F3F46;
+        border-radius: 8px; font-family: inherit; font-size: 16px; transition: 0.3s;
+    }
+    .form-row { display: flex; gap: 10px; }
+
+    /* 唯讀狀態 (Disabled) - 此情境所有欄位永遠鎖定 */
+    .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
+        background-color: #18181B;
+        color: #A1A1AA !important;
+        cursor: not-allowed;
+        border-color: #27272A;
+        -webkit-text-fill-color: #A1A1AA;
+        opacity: 1;
+    }
+
+    /* === 次要/邊框按鈕 === */
+    .btn-secondary-outline {
+        background: transparent; color: #D4AF37 !important; border: 1px solid #BF953F;
+        width: 100%; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 500;
+        cursor: pointer; margin-top: 10px; transition: 0.3s;
+    }
+    .btn-secondary-outline:hover { background: rgba(191, 149, 63, 0.1); box-shadow: 0 0 10px rgba(191, 149, 63, 0.2);}
+
+    .btn-primary {
+        width: 100%; border: none; padding: 14px; border-radius: 8px;
+        font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
+        background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        color: #000000 !important;
+        box-shadow: 0 4px 15px rgba(191, 149, 63, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(252, 246, 186, 0.4);
+    }
+
+    /* === 資訊卡片 (Info Card) === */
+    .info-card {
+        background-color: #18181B; /* 極深灰 */
+        border: 1px solid #BF953F; /* 金色邊線 */
+        border-radius: 8px; padding: 15px; padding-bottom: 20px; font-size: 14px;
+        color: #E2E8F0 !important; margin-bottom: 0; position: relative;
+        box-shadow: inset 0 0 10px rgba(191, 149, 63, 0.05);
+    }
+
+    /* 已截止標籤 */
+    .locked-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: rgba(248, 113, 113, 0.1); color: #F87171 !important;
+        border: 1px solid rgba(248, 113, 113, 0.4);
+        font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+        margin-bottom: 8px;
+    }
+    .locked-badge i { color: #F87171 !important; font-size: 11px; }
+
+    .text-center { text-align: center; }
+
+    /* === 專屬黑金卷軸樣式 === */
+    * { scrollbar-width: thin; scrollbar-color: #BF953F #121212; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #121212; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: #BF953F; border-radius: 10px; border: 2px solid #121212; }
+    ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    <div class="header">
+        <h1>VIP 專屬禮品登記</h1>
+    </div>
+
+    <div class="content">
+        <!-- View 1: 身分驗證 -->
+        <div id="view-auth" class="view-section active">
+            <div class="scroll-container">
+                <div class="text-center" style="margin-bottom: 30px;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 48px; color: #3b82f6; margin-bottom: 15px;"></i>
+                    <h2 style="margin: 0; color: #1e293b; font-size: 20px;">身分驗證</h2>
+                    <p style="color: #64748b; font-size: 14px;">為了保障您的權益，請輸入您的遊戲暱稱與綁定的手機門號進行驗證。</p>
+                </div>
+
+                <div class="form-group">
+                    <label>遊戲暱稱</label>
+                    <input type="text" placeholder="請輸入您的遊戲暱稱" id="nicknameInput">
+                </div>
+
+                <div class="form-group">
+                    <label>綁定手機門號</label>
+                    <input type="tel" placeholder="09xxxxxxxx" id="phoneInput">
+                </div>
+
+                <!-- 逾期但曾留存資料情境：驗證後直接進入唯讀資訊頁，不經過意願確認 -->
+                <button class="btn-primary" onclick="switchView('view-form')">驗證並繼續</button>
+                <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">錯誤達 3 次將暫停驗證 15 分鐘</p>
+            </div>
+        </div>
+
+        <!-- View 5: 資料查看頁 (已逾期，全鎖定，無修改按鈕) -->
+        <div id="view-form" class="view-section">
+            <div class="form-fixed-header">
+                <div class="info-card">
+                    <span class="locked-badge"><i class="fa-solid fa-lock"></i> 已截止 · 僅供查看</span><br>
+                    歡迎回來，<strong>玩家 [Hero_99]</strong>！<br>
+                    本次禮品領取已於 <strong>2026/07/30</strong> 截止，以下為您先前留存之收件資訊，已無法再進行修改。若有任何問題，請聯繫「<strong>包你發</strong>」線上客服為您服務，謝謝。
+                </div>
+            </div>
+
+            <div class="form-scroll-body">
+                <div class="form-group">
+                    <label>真實姓名</label>
+                    <input type="text" id="inputName" value="王大明" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>聯絡電話</label>
+                    <input type="tel" id="inputPhone" value="0912345678" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>配送方式</label>
+                    <select id="deliveryMethod" disabled>
+                        <option selected>宅配到府</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>收件地址</label>
+                    <div class="form-row" style="margin-bottom: 10px;">
+                        <select style="flex: 1;" disabled><option selected>台中市</option></select>
+                        <select style="flex: 1;" disabled><option selected>西屯區</option></select>
+                    </div>
+                    <input type="text" id="inputAddress" value="台灣大道三段99號" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>備註 / 意見回饋</label>
+                    <textarea rows="3" id="inputRemark" disabled>麻煩幫我注意一下包裹不要摔到，謝謝！</textarea>
+                </div>
+
+                <button class="btn-secondary-outline" onclick="return false;" style="margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-brands fa-line" style="color:#D4AF37 !important;"></i> 聯繫線上客服
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+    }
+</script>
+</body>
+</html>
